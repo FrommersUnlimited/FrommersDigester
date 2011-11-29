@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:util="http://www.springframework.org/schema/util"
+xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+ 
+  <bean id ="marshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+         <property name="annotatedClasses" ref="annotatedClassesToRead"/>
+  </bean>   
+  
+  <util:list id="annotatedClassesToRead">
+       <value>com.wiley.frommers.feedunmarshaller.domain.SearchResponse</value>
+       <value>com.wiley.frommers.feedunmarshaller.domain.MainSearchResult</value>
+	   <value>com.wiley.frommers.feedunmarshaller.domain.EventSearchResult</value>
+	   <value>com.wiley.frommers.feedunmarshaller.domain.ItemOfInterest</value>
+	   <value>com.wiley.frommers.feedunmarshaller.domain.DestinationMenu</value>
+	   <value>com.wiley.frommers.feedunmarshaller.domain.AudienceInterestResult</value>   
+ 	   <value>com.wiley.frommers.feedunmarshaller.domain.LocationSearchResult</value>
+ 	   <value>com.wiley.frommers.feedunmarshaller.domain.GuideStructure</value>   
+ 	   <value>com.wiley.frommers.feedunmarshaller.domain.Slideshow</value>   
+ 	   <value>com.wiley.frommers.feedunmarshaller.domain.SlideshowSearchResult</value>   
+ 	   <value>com.wiley.frommers.feedunmarshaller.domain.POISearchResult</value>   
+ 	   <value>com.wiley.frommers.feedunmarshaller.domain.Location</value>   	   
+ </util:list>
+
+
+  <bean id ="destinationService" class="com.wiley.frommers.feedunmarshaller.service.DestinationServiceImpl">     
+       <property name="odfUrl" value="${site.url}"/>       
+       <property name="marshaller" ref="marshaller"/>               
+  </bean>
+  
+  <bean id ="feedProxy" class="com.wiley.frommers.feedunmarshaller.cache.FeedProxy">     
+       <property name="destinationService" ref="destinationService"/>       
+  </bean>
+  
+  <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">    
+		<property name="location" value="classpath:default.properties"/>  <!--reads config.properties file-->  
+  </bean>  
+</beans>
