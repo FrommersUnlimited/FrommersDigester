@@ -13,7 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * 
  */
 @XStreamAlias("image")
-public class ThumbnailSerializable implements Serializable {
+public class MediaImage implements Serializable {
     private static final long serialVersionUID = -8725144430215949557L;
 
     @XStreamAsAttribute

@@ -18,7 +18,7 @@ public class SlideshowSearchResult implements SearchResult {
 
     private String description;
 
-    private ThumbnailSerializable image;
+    private MediaImage image;
 
     public Long getId() {
         return id;
@@ -36,11 +36,11 @@ public class SlideshowSearchResult implements SearchResult {
         return name;
     }
 
-    public ThumbnailSerializable getImage() {
+    public MediaImage getImage() {
         return image;
     }
 
-    public void setImage(ThumbnailSerializable image) {
+    public void setImage(MediaImage image) {
         this.image = image;
     }
 

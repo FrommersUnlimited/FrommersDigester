@@ -40,6 +40,8 @@ public class FeedProxy implements DestinationService {
 
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private static final MapCache MAP_CACHE = new MapCache();
+
     public SearchResponse<EventSearchResult> getEventsByQuery(EventQuery query)
             throws SispException {
 
@@ -54,12 +56,12 @@ public class FeedProxy implements DestinationService {
 
     public DestinationMenu getDestinationMenuByQuery(DestinationMenuQuery query)
             throws SispException {
-        DestinationMenu result = MapCache.getDestinationMenu(query.getId());
+        DestinationMenu result = MAP_CACHE.getDestinationMenu(query.getId());
 
         if (result == null) {
             result = destinationService.getDestinationMenuByQuery(query);
             if (result != null)
-                MapCache.addDestinationMenu(result);
+                MAP_CACHE.addDestinationMenu(result);
             logger.info("getDestinationMenuByQuery from http");
         } else
             logger.info("getDestinationMenuByQuery from sisp cache");
@@ -69,7 +71,18 @@ public class FeedProxy implements DestinationService {
 
     public ItemOfInterest getItemOfInterestById(String id) throws SispException {
 
-        return destinationService.getItemOfInterestById(id);
+        ItemOfInterest result = MAP_CACHE.getItemOfInterest(id);
+
+        if (result == null) {
+            result = destinationService.getItemOfInterestById(id);
+            if (result != null)
+                MAP_CACHE.addItemOfInterest(result);
+            logger.info("getItemOfInterestById from network");
+        } else
+            logger.info("getItemOfInterestById from cache");
+
+        return result;
+
     }
 
     public void setDestinationService(DestinationService destinationService) {
@@ -85,12 +98,12 @@ public class FeedProxy implements DestinationService {
     public GuideStructure getGuideStructureByQuery(GuideQuery query)
             throws SispException {
 
-        GuideStructure result = MapCache.getGuideStructure(query.getId());
+        GuideStructure result = MAP_CACHE.getGuideStructure(query.getId());
 
         if (result == null) {
             result = destinationService.getGuideStructureByQuery(query);
             if (result != null)
-                MapCache.addGuideStructure(result);
+                MAP_CACHE.addGuideStructure(result);
             logger.info("getGuideStructureByQuery from http");
         } else
             logger.info("getGuideStructureByQuery from sisp cache");
@@ -101,12 +114,12 @@ public class FeedProxy implements DestinationService {
 
     public Slideshow getSildesShowByQuery(SlideShowQuery query)
             throws SispException {
-        Slideshow result = MapCache.getSlideshow(query.getId());
+        Slideshow result = MAP_CACHE.getSlideshow(query.getId());
 
         if (result == null) {
             result = destinationService.getSildesShowByQuery(query);
             if (result != null)
-                MapCache.addSlideshow(query.getId(), result);
+                MAP_CACHE.addSlideshow(query.getId(), result);
             logger.info("getSildesShowByQuery from http");
         } else
             logger.info("getSildesShowByQuery from sisp cache");
@@ -115,12 +128,12 @@ public class FeedProxy implements DestinationService {
     }
 
     public Location getLocationById(String id) throws SispException {
-        Location result = MapCache.getLocation(id);
+        Location result = MAP_CACHE.getLocation(id);
 
         if (result == null) {
             result = destinationService.getLocationById(id);
             if (result != null)
-                MapCache.addLocation(result);
+                MAP_CACHE.addLocation(result);
             logger.info("getSildesShowByQuery from http");
         } else
             logger.info("getSildesShowByQuery from sisp cache");
