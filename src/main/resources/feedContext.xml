@@ -24,7 +24,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
  	   <value>com.wiley.frommers.feedunmarshaller.domain.Location</value>   	   
  </util:list>
 
-
   <bean id ="destinationService" class="com.wiley.frommers.feedunmarshaller.service.DestinationServiceImpl">     
        <property name="odfUrl" value="${site.url}"/>       
        <property name="marshaller" ref="marshaller"/>               
