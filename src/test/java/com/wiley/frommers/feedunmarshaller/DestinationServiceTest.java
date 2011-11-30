@@ -1,7 +1,7 @@
 /*
  * &copy; John Wiley &amp; Sons, Inc
  */
-package com.wiley.frommers.feedunmarchaller;
+package com.wiley.frommers.feedunmarshaller;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
