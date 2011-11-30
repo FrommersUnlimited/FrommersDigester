@@ -9,6 +9,8 @@ package com.wiley.frommers.feedunmarshaller.query;
  */
 public class GuideQuery extends LocalizedQuery {
 
+    public static String INTRODUCTION_TYPE_ID = "557449";
+
     public GuideQuery() {
         super();
     }

@@ -23,33 +23,115 @@ import com.wiley.frommers.feedunmarshaller.query.PoiQuery;
 import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
 
 /**
- * @author fzerdoudi, created 7 Nov 2011
+ * The Interface DestinationService.
  * 
+ * @author fzerdoudi, created 7 Nov 2011
  */
 public interface DestinationService {
 
+    /**
+     * Gets the events by query.
+     * 
+     * @param query
+     *            the query
+     * @return the events by query
+     * @throws SispException
+     *             the sisp exception
+     */
     SearchResponse<EventSearchResult> getEventsByQuery(EventQuery query)
             throws SispException;
 
+    /**
+     * Gets the categories by query.
+     * 
+     * @param query
+     *            the query
+     * @return the categories by query
+     * @throws SispException
+     *             the sisp exception
+     */
     SearchResponse<AudienceInterestResult> getCategoriesByQuery(
             CategoryQuery query) throws SispException;
 
+    /**
+     * Gets the destination menu by query.
+     * 
+     * @param query
+     *            the query
+     * @return the destination menu by query
+     * @throws SispException
+     *             the sisp exception
+     */
     DestinationMenu getDestinationMenuByQuery(DestinationMenuQuery query)
             throws SispException;
 
+    /**
+     * Gets the item of interest by id.
+     * 
+     * @param id
+     *            the id
+     * @return the item of interest by id
+     * @throws SispException
+     *             the sisp exception
+     */
     ItemOfInterest getItemOfInterestById(String id) throws SispException;
 
+    /**
+     * Gets the locations by query.
+     * 
+     * @param query
+     *            the query
+     * @return the locations by query
+     * @throws SispException
+     *             the sisp exception
+     */
     SearchResponse<LocationSearchResult> getLocationsByQuery(LocationQuery query)
             throws SispException;
 
+    /**
+     * Gets the guide structure by query.
+     * 
+     * @param query
+     *            the query
+     * @return the guide structure by query
+     * @throws SispException
+     *             the sisp exception
+     */
     GuideStructure getGuideStructureByQuery(GuideQuery query)
             throws SispException;
 
+    /**
+     * Gets the sildes show by query.
+     * 
+     * @param query
+     *            the query
+     * @return the sildes show by query
+     * @throws SispException
+     *             the sisp exception
+     */
     Slideshow getSildesShowByQuery(SlideShowQuery query) throws SispException;
 
+    /**
+     * Gets the pois by query.
+     * 
+     * @param query
+     *            the query
+     * @return the pois by query
+     * @throws SispException
+     *             the sisp exception
+     */
     SearchResponse<POISearchResult> getPoisByQuery(PoiQuery query)
             throws SispException;
 
+    /**
+     * Gets the location by id.
+     * 
+     * @param id
+     *            the id
+     * @return the location by id
+     * @throws SispException
+     *             the sisp exception
+     */
     Location getLocationById(String id) throws SispException;
 
 }
