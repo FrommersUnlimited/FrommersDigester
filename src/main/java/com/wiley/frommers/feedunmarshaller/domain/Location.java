@@ -54,6 +54,8 @@ public class Location {
     @XStreamAsAttribute
     private String closed;
 
+    private String nameCode;
+
     @XStreamAsAttribute
     @XStreamConverter(DoubleConverter.class)
     private Double latitude;
@@ -196,6 +198,14 @@ public class Location {
 
     public void setRecommendations(Set<Recommendation> recommendations) {
         this.recommendations = recommendations;
+    }
+
+    public String getNameCode() {
+        return nameCode;
+    }
+
+    public void setNameCode(String nameCode) {
+        this.nameCode = nameCode;
     }
 
 }
