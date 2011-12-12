@@ -7,7 +7,7 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class PoiQuery extends LocalizedQuery {
+public class PoiQuery extends LocationQuery {
 
     public PoiQuery() {
         super();

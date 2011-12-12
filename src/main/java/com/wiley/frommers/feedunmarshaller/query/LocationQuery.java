@@ -7,14 +7,22 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class LocationQuery extends LocalizedQuery {
+public class LocationQuery extends PaginatedFeedQuery {
 
     public LocationQuery() {
         super();
-        // setNPerPage(100);
         showMax(false);
-        // queryParams.put("hasGuide", "true");
 
+    }
+
+    public static String LOCATION_ID_PARAM_NAME = "locationId";
+
+    public void setLocationId(String id) {
+        queryParams.put(LOCATION_ID_PARAM_NAME, id);
+    }
+
+    public String getLocationId() {
+        return queryParams.get(LOCATION_ID_PARAM_NAME);
     }
 
     public void setLocationType(String type) {

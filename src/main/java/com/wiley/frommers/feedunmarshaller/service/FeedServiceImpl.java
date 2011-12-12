@@ -30,7 +30,7 @@ import com.wiley.frommers.feedunmarshaller.exception.SispException;
 import com.wiley.frommers.feedunmarshaller.exception.SispHttpException;
 import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
-import com.wiley.frommers.feedunmarshaller.query.EventQuery;
+import com.wiley.frommers.feedunmarshaller.query.EventSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.FeedQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
 import com.wiley.frommers.feedunmarshaller.query.LocationQuery;
@@ -146,7 +146,7 @@ public class FeedServiceImpl implements FeedService {
 
     }
 
-    public SearchResponse<EventSearchResult> searchEvents(EventQuery query)
+    public SearchResponse<EventSearchResult> searchEvents(EventSearchQuery query)
             throws SispException {
         // TODO see if we cache the search results
         final SearchResponse<EventSearchResult> eventResponse = executeQuery(
@@ -155,7 +155,7 @@ public class FeedServiceImpl implements FeedService {
         return eventResponse;
     }
 
-    public SearchResponse<MainSearchResult> searchIois(EventQuery query)
+    public SearchResponse<MainSearchResult> searchMains(EventSearchQuery query)
             throws SispException {
         final SearchResponse<MainSearchResult> eventResponse = executeQuery(
                 EVENT_SEARCH_FEED, query);

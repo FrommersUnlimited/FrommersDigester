@@ -21,7 +21,7 @@ import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
 import com.wiley.frommers.feedunmarshaller.exception.SispException;
 import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
-import com.wiley.frommers.feedunmarshaller.query.EventQuery;
+import com.wiley.frommers.feedunmarshaller.query.EventSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
 import com.wiley.frommers.feedunmarshaller.query.LocationQuery;
 import com.wiley.frommers.feedunmarshaller.query.PoiQuery;
@@ -54,7 +54,7 @@ public class DestinationServiceTest extends AbstractFeedTest {
             logger.debug("testGetEventByQuery() - start");
         }
 
-        EventQuery query = new EventQuery();
+        EventSearchQuery query = new EventSearchQuery();
         // search paris event
         query.setLocationId(PARIS_ID.toString());
 
