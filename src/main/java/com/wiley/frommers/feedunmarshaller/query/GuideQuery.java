@@ -17,7 +17,6 @@ public class GuideQuery extends LocationSearchQuery {
 
     public void setGuideStructureTypeId(String type) {
         queryParams.put("guideStructureTypeId", type);
-
     }
 
     public String getGuideStructureTypeId() {

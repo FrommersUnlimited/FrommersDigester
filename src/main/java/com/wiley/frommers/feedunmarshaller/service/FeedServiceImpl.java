@@ -35,7 +35,7 @@ import com.wiley.frommers.feedunmarshaller.query.FeedQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
 import com.wiley.frommers.feedunmarshaller.query.LocationSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.PoiSearchQuery;
-import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
+import com.wiley.frommers.feedunmarshaller.query.SlideShowSearchQuery;
 
 /**
  * @author fzerdoudi, created 7 Nov 2011
@@ -250,45 +250,6 @@ public class FeedServiceImpl implements FeedService {
         return result;
     }
 
-    // TODO refactore this method the return a list of Slideshows
-    public Slideshow getSildesShowByQuery(SlideShowQuery query)
-            throws SispException {
-
-        Slideshow result = null;
-
-        if (cacheActive) {
-
-            result = MAP_CACHE.get(query.getId());
-            if (result != null)
-                return result;
-
-        }
-
-        final SearchResponse<SlideshowSearchResult> slidesResult = executeQuery(
-                SLIDE_SHOW_SEARCH_FEED, query);
-
-        logger.debug("getSildesShowByQuery() SlideshowSearchResult found = "
-                + "(" + slidesResult.getTotalResultCount() + ")");
-
-        if (slidesResult == null || slidesResult.getTotalResultCount() == 0)
-            return null;
-
-        String feedUrl = odfUrl + SLIDE_SHOW_FEED + "?slideshowId="
-                + slidesResult.getResults().get(0).getId();
-
-        final InputStream stream = getHttpInputStream(feedUrl);
-
-        result = (Slideshow) marshaller.getXStream().fromXML(stream);
-
-        if (cacheActive && result != null)
-            MAP_CACHE.put(query.getId(), result);
-
-        logger.debug("getSildesShowByQuery() slideshow found = " + "("
-                + result.getSlideCount() + ")");
-
-        return result;
-    }
-
     public SearchResponse<POISearchResult> searchPois(PoiSearchQuery query)
             throws SispException {
 
@@ -323,6 +284,44 @@ public class FeedServiceImpl implements FeedService {
 
     public void setCacheActive(boolean useCache) {
         this.cacheActive = useCache;
+    }
+
+    public SearchResponse<SlideshowSearchResult> searchSildeshows(
+            SlideShowSearchQuery query) throws SispException {
+        final SearchResponse<SlideshowSearchResult> slidesResult = executeQuery(
+                SLIDE_SHOW_SEARCH_FEED, query);
+
+        logger.debug("getSildesShowByQuery() SlideshowSearchResult found = "
+                + "(" + slidesResult.getTotalResultCount() + ")");
+
+        return slidesResult;
+    }
+
+    public Slideshow getSildeshowById(Long id) throws SispException {
+
+        Slideshow result = null;
+
+        if (cacheActive) {
+
+            result = MAP_CACHE.get(id.toString());
+            if (result != null)
+                return result;
+
+        }
+
+        String feedUrl = odfUrl + SLIDE_SHOW_FEED + "?slideshowId=" + id;
+
+        final InputStream stream = getHttpInputStream(feedUrl);
+
+        result = (Slideshow) marshaller.getXStream().fromXML(stream);
+
+        if (cacheActive && result != null)
+            MAP_CACHE.put(id.toString(), result);
+
+        logger.debug("getSildesShowById() slideshow found = " + "("
+                + result.getSlideCount() + ")");
+
+        return result;
     }
 
 }

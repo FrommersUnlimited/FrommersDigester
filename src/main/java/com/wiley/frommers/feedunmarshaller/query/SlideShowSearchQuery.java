@@ -7,9 +7,9 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 13 Nov 2011
  * 
  */
-public class SlideShowQuery extends LocationSearchQuery {
+public class SlideShowSearchQuery extends LocationSearchQuery {
 
-    public SlideShowQuery() {
+    public SlideShowSearchQuery() {
         super();
     }
 
@@ -24,7 +24,7 @@ public class SlideShowQuery extends LocationSearchQuery {
     @Override
     public String getId() {
         // TODO Auto-generated method stub
-        return "Slideshow" + getLocationId();
+        return "Slideshow:" + getLocationId();
     }
 
 }

@@ -14,6 +14,7 @@ import com.wiley.frommers.feedunmarshaller.domain.MainSearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.POISearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.SearchResponse;
 import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
+import com.wiley.frommers.feedunmarshaller.domain.SlideshowSearchResult;
 import com.wiley.frommers.feedunmarshaller.exception.SispException;
 import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
@@ -21,7 +22,7 @@ import com.wiley.frommers.feedunmarshaller.query.EventSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
 import com.wiley.frommers.feedunmarshaller.query.LocationSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.PoiSearchQuery;
-import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
+import com.wiley.frommers.feedunmarshaller.query.SlideShowSearchQuery;
 
 /**
  * The Interface DestinationService.
@@ -110,8 +111,8 @@ public interface FeedService {
      * @throws SispException
      *             the sisp exception
      */
-    SearchResponse<LocationSearchResult> searchLocations(LocationSearchQuery query)
-            throws SispException;
+    SearchResponse<LocationSearchResult> searchLocations(
+            LocationSearchQuery query) throws SispException;
 
     /**
      * Gets the guide structure by query.
@@ -126,6 +127,18 @@ public interface FeedService {
             throws SispException;
 
     /**
+     * Search sildes show.
+     * 
+     * @param query
+     *            the query
+     * @return the search response
+     * @throws SispException
+     *             the sisp exception
+     */
+    SearchResponse<SlideshowSearchResult> searchSildeshows(
+            SlideShowSearchQuery query) throws SispException;
+
+    /**
      * Gets the sildes show by query.
      * 
      * @param query
@@ -134,7 +147,7 @@ public interface FeedService {
      * @throws SispException
      *             the sisp exception
      */
-    Slideshow getSildesShowByQuery(SlideShowQuery query) throws SispException;
+    Slideshow getSildeshowById(Long id) throws SispException;
 
     /**
      * Gets the location by id.

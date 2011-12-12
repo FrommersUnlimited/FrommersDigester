@@ -16,8 +16,8 @@ import com.wiley.frommers.feedunmarshaller.domain.LocationNode;
 import com.wiley.frommers.feedunmarshaller.domain.LocationSearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.POISearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.SearchResponse;
-import com.wiley.frommers.feedunmarshaller.domain.Slide;
 import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
+import com.wiley.frommers.feedunmarshaller.domain.SlideshowSearchResult;
 import com.wiley.frommers.feedunmarshaller.exception.SispException;
 import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
@@ -25,7 +25,7 @@ import com.wiley.frommers.feedunmarshaller.query.EventSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
 import com.wiley.frommers.feedunmarshaller.query.LocationSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.PoiSearchQuery;
-import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
+import com.wiley.frommers.feedunmarshaller.query.SlideShowSearchQuery;
 import com.wiley.frommers.feedunmarshaller.service.FeedService;
 
 /**
@@ -189,20 +189,23 @@ public class DestinationServiceTest extends AbstractFeedTest {
             logger.debug("testGetSildesShowByQuery() - start");
         }
 
-        SlideShowQuery query = new SlideShowQuery();
+        SlideShowSearchQuery query = new SlideShowSearchQuery();
         query.setLocationId(PARIS_ID.toString());
 
-        Slideshow slideshow = feedService.getSildesShowByQuery(query);
+        SearchResponse<SlideshowSearchResult> slideshowsResult = feedService
+                .searchSildeshows(query);
 
-        assertNotNull(slideshow);
-        assertNotNull(slideshow.getName());
-        assertNotNull(slideshow.getSlides());
-        assertNotNull(slideshow.getLocationNodes());
+        assertNotNull(slideshowsResult);
+        assertNotNull(slideshowsResult.getResults());
 
-        for (Slide slide : slideshow.getSlides()) {
+        assertNotNull(slideshowsResult.getTotalResultCount());
+        assertTrue(slideshowsResult.getTotalResultCount() > 0);
+
+        for (SlideshowSearchResult slide : slideshowsResult.getResults()) {
             assertNotNull(slide.getName());
-            assertNotNull(slide.getMedia());
 
+            Slideshow slidShow = feedService.getSildeshowById(slide.getId());
+            assertNotNull(slidShow);
         }
 
         if (logger.isDebugEnabled()) {

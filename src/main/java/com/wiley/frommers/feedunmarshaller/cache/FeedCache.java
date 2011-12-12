@@ -4,9 +4,9 @@ public interface FeedCache {
 
     <T> void put(String key, T o);
 
-    <T> T get(String id);
+    <T> T get(String key);
 
     void clear();
 
-    boolean contains(String id);
+    boolean contains(String key);
 }

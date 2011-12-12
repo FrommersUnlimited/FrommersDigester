@@ -23,7 +23,7 @@ public class MapCache implements FeedCache {
     }
 
     public <T> T get(String key) {
-        // TODO Auto-generated method stub
+
         return (T) CACHE.get(key);
     }
 
