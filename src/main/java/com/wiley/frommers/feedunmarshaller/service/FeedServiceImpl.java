@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.stereotype.Service;
 
+import com.wiley.frommers.feedunmarshaller.cache.MapCache;
 import com.wiley.frommers.feedunmarshaller.domain.AudienceInterestResult;
 import com.wiley.frommers.feedunmarshaller.domain.DestinationMenu;
 import com.wiley.frommers.feedunmarshaller.domain.EventSearchResult;
@@ -26,10 +27,10 @@ import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
 import com.wiley.frommers.feedunmarshaller.domain.SlideshowSearchResult;
 import com.wiley.frommers.feedunmarshaller.exception.SispException;
 import com.wiley.frommers.feedunmarshaller.exception.SispHttpException;
-import com.wiley.frommers.feedunmarshaller.query.AbstractQuery;
-import com.wiley.frommers.feedunmarshaller.query.CategoryQuery;
+import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
 import com.wiley.frommers.feedunmarshaller.query.EventQuery;
+import com.wiley.frommers.feedunmarshaller.query.FeedQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
 import com.wiley.frommers.feedunmarshaller.query.LocationQuery;
 import com.wiley.frommers.feedunmarshaller.query.PoiQuery;
@@ -41,7 +42,10 @@ import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
  */
 @Service
 @SuppressWarnings("unchecked")
-public class DestinationServiceImpl implements DestinationService {
+public class FeedServiceImpl implements FeedService {
+
+    // TODO how to use a caching interface
+    private static final MapCache MAP_CACHE = new MapCache();
 
     private static final String EVENT_SEARCH_FEED = "event_search.feed";
     private static final String DESTINATION_MENU_FEED = "destination_menu.feed";
@@ -56,6 +60,8 @@ public class DestinationServiceImpl implements DestinationService {
 
     private String odfUrl;
 
+    private boolean cacheActive = true;
+
     public void setOdfUrl(String odfUrl) {
         this.odfUrl = odfUrl;
     }
@@ -69,6 +75,15 @@ public class DestinationServiceImpl implements DestinationService {
     @Autowired(required = true)
     private XStreamMarshaller marshaller;
 
+    /**
+     * Gets the http input stream of the feed.
+     * 
+     * @param url
+     *            the feeds url
+     * @return the http input stream
+     * @throws SispHttpException
+     *             the sisp http exception
+     */
     private InputStream getHttpInputStream(String url) throws SispHttpException {
 
         try {
@@ -84,7 +99,20 @@ public class DestinationServiceImpl implements DestinationService {
 
     }
 
-    private <T> T executeQuery(String feed, AbstractQuery query)
+    /**
+     * Execute query and unmarshal the inputStream to a java object.
+     * 
+     * @param <T>
+     *            the java object type
+     * @param feed
+     *            the feed name
+     * @param query
+     *            the query
+     * @return the t
+     * @throws SispHttpException
+     *             the sisp http exception
+     */
+    private <T> T executeQuery(String feed, FeedQuery query)
             throws SispHttpException {
 
         final String feedUrl = buildFullFeedUrl(query, odfUrl + feed);
@@ -96,7 +124,16 @@ public class DestinationServiceImpl implements DestinationService {
         return eventResponse;
     }
 
-    private static String buildFullFeedUrl(AbstractQuery query, String feed) {
+    /**
+     * Builds the full feed url from the feed name and the query parameters.
+     * 
+     * @param query
+     *            the query
+     * @param feed
+     *            the feed
+     * @return the string
+     */
+    private static String buildFullFeedUrl(FeedQuery query, String feed) {
         String paramUrl = query.toUrl();
         String fullUrl;
         if (paramUrl != null)
@@ -108,17 +145,17 @@ public class DestinationServiceImpl implements DestinationService {
 
     }
 
-    public SearchResponse<EventSearchResult> getEventsByQuery(EventQuery query)
+    public SearchResponse<EventSearchResult> searchEvents(EventQuery query)
             throws SispException {
-
+        // TODO see if we cache the search results
         final SearchResponse<EventSearchResult> eventResponse = executeQuery(
                 EVENT_SEARCH_FEED, query);
 
         return eventResponse;
     }
 
-    public SearchResponse<AudienceInterestResult> getCategoriesByQuery(
-            CategoryQuery query) throws SispException {
+    public SearchResponse<AudienceInterestResult> searchAudienceInterests(
+            AudienceInterestQuery query) throws SispException {
 
         final SearchResponse<AudienceInterestResult> eventResponse = executeQuery(
                 AUDIENCE_INTEREST_SEARCH_FEED, query);
@@ -130,25 +167,49 @@ public class DestinationServiceImpl implements DestinationService {
     public DestinationMenu getDestinationMenuByQuery(DestinationMenuQuery query)
             throws SispException {
 
-        final DestinationMenu destinationMenu = executeQuery(
-                DESTINATION_MENU_FEED, query);
+        DestinationMenu result = null;
 
-        return destinationMenu;
+        if (cacheActive) {
+            result = MAP_CACHE.getDestinationMenu(query.getId());
+            if (result != null) {
+                logger.info("getDestinationMenuByQuery from sisp cache");
+                return result;
+            }
+        }
+
+        result = executeQuery(DESTINATION_MENU_FEED, query);
+
+        if (cacheActive && result != null)
+            MAP_CACHE.addDestinationMenu(result);
+
+        return result;
     }
 
-    public ItemOfInterest getItemOfInterestById(String id) throws SispException {
+    public ItemOfInterest getItemOfInterestById(Long id) throws SispException {
+
+        ItemOfInterest result = null;
+        if (cacheActive) {
+            result = MAP_CACHE.getItemOfInterest(id.toString());
+            if (result != null) {
+                logger.info("getItemOfInterestById from sisp cache");
+                return result;
+            }
+        }
 
         final String feedUrl = odfUrl + ITEM_OF_INTEREST_FEED
                 + "?itemOfInterestId=" + id;
 
         final InputStream stream = getHttpInputStream(feedUrl);
 
-        ItemOfInterest itemOfInterest = (ItemOfInterest) marshaller
-                .getXStream().fromXML(stream);
-        return itemOfInterest;
+        result = (ItemOfInterest) marshaller.getXStream().fromXML(stream);
+        if (cacheActive && result != null)
+            MAP_CACHE.addItemOfInterest(result);
+        logger.info("getItemOfInterestById from network");
+
+        return result;
     }
 
-    public SearchResponse<LocationSearchResult> getLocationsByQuery(
+    public SearchResponse<LocationSearchResult> searchLocations(
             LocationQuery query) throws SispException {
 
         final SearchResponse<LocationSearchResult> eventResponse = executeQuery(
@@ -161,15 +222,38 @@ public class DestinationServiceImpl implements DestinationService {
     public GuideStructure getGuideStructureByQuery(GuideQuery query)
             throws SispException {
 
-        final GuideStructure guide = executeQuery(GUIDE_STRUCTURE_FEED, query);
+        GuideStructure result = null;
 
-        return guide;
+        if (cacheActive) {
+            result = MAP_CACHE.getGuideStructure(query.getId());
+            if (result != null) {
+                logger.info("getGuideStructureByQuery from sisp cache");
+                return result;
+            }
+        }
+
+        result = executeQuery(GUIDE_STRUCTURE_FEED, query);
+
+        if (cacheActive && result != null)
+            MAP_CACHE.addGuideStructure(result);
+        logger.info("getGuideStructureByQuery from http");
+
+        return result;
     }
 
+    // TODO refactore this method the return a list of Slideshows
     public Slideshow getSildesShowByQuery(SlideShowQuery query)
             throws SispException {
+        Slideshow result = null;
+        if (cacheActive) {
 
-        SearchResponse<SlideshowSearchResult> slidesResult = executeQuery(
+            result = MAP_CACHE.getSlideshow(query.getId());
+            if (result != null)
+                return result;
+
+        }
+
+        final SearchResponse<SlideshowSearchResult> slidesResult = executeQuery(
                 SLIDE_SHOW_SEARCH_FEED, query);
 
         logger.debug("getSildesShowByQuery() SlideshowSearchResult found = "
@@ -181,18 +265,20 @@ public class DestinationServiceImpl implements DestinationService {
         String feedUrl = odfUrl + SLIDE_SHOW_FEED + "?slideshowId="
                 + slidesResult.getResults().get(0).getId();
 
-        InputStream stream = getHttpInputStream(feedUrl);
+        final InputStream stream = getHttpInputStream(feedUrl);
 
-        Slideshow slideshow = (Slideshow) marshaller.getXStream().fromXML(
-                stream);
+        result = (Slideshow) marshaller.getXStream().fromXML(stream);
+
+        if (cacheActive && result != null)
+            MAP_CACHE.addSlideshow(query.getId(), result);
 
         logger.debug("getSildesShowByQuery() slideshow found = " + "("
-                + slideshow.getSlideCount() + ")");
+                + result.getSlideCount() + ")");
 
-        return slideshow;
+        return result;
     }
 
-    public SearchResponse<POISearchResult> getPoisByQuery(PoiQuery query)
+    public SearchResponse<POISearchResult> searchPois(PoiQuery query)
             throws SispException {
 
         final SearchResponse<POISearchResult> eventResponse = executeQuery(
@@ -201,13 +287,31 @@ public class DestinationServiceImpl implements DestinationService {
         return eventResponse;
     }
 
-    public Location getLocationById(String id) throws SispException {
+    public Location getLocationById(Long id) throws SispException {
         final String feedUrl = odfUrl + LOCATION_FEED + "?locationId=" + id;
+        Location result = null;
+
+        if (cacheActive) {
+            result = MAP_CACHE.getLocation(id.toString());
+            if (result != null)
+                return result;
+
+        }
 
         final InputStream stream = getHttpInputStream(feedUrl);
 
-        Location location = (Location) marshaller.getXStream().fromXML(stream);
-        return location;
+        result = (Location) marshaller.getXStream().fromXML(stream);
+
+        if (cacheActive && result != null)
+            MAP_CACHE.addLocation(result);
+
+        logger.info("getLocationById from http");
+
+        return result;
+    }
+
+    public void setCacheActive(boolean useCache) {
+        this.cacheActive = useCache;
     }
 
 }

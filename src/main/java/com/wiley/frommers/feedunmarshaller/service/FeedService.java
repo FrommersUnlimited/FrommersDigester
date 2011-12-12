@@ -14,7 +14,7 @@ import com.wiley.frommers.feedunmarshaller.domain.POISearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.SearchResponse;
 import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
 import com.wiley.frommers.feedunmarshaller.exception.SispException;
-import com.wiley.frommers.feedunmarshaller.query.CategoryQuery;
+import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
 import com.wiley.frommers.feedunmarshaller.query.EventQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
@@ -27,7 +27,7 @@ import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
  * 
  * @author fzerdoudi, created 7 Nov 2011
  */
-public interface DestinationService {
+public interface FeedService {
 
     /**
      * Gets the events by query.
@@ -38,7 +38,7 @@ public interface DestinationService {
      * @throws SispException
      *             the sisp exception
      */
-    SearchResponse<EventSearchResult> getEventsByQuery(EventQuery query)
+    SearchResponse<EventSearchResult> searchEvents(EventQuery query)
             throws SispException;
 
     /**
@@ -50,8 +50,8 @@ public interface DestinationService {
      * @throws SispException
      *             the sisp exception
      */
-    SearchResponse<AudienceInterestResult> getCategoriesByQuery(
-            CategoryQuery query) throws SispException;
+    SearchResponse<AudienceInterestResult> searchAudienceInterests(
+            AudienceInterestQuery query) throws SispException;
 
     /**
      * Gets the destination menu by query.
@@ -74,7 +74,7 @@ public interface DestinationService {
      * @throws SispException
      *             the sisp exception
      */
-    ItemOfInterest getItemOfInterestById(String id) throws SispException;
+    ItemOfInterest getItemOfInterestById(Long id) throws SispException;
 
     /**
      * Gets the locations by query.
@@ -85,7 +85,7 @@ public interface DestinationService {
      * @throws SispException
      *             the sisp exception
      */
-    SearchResponse<LocationSearchResult> getLocationsByQuery(LocationQuery query)
+    SearchResponse<LocationSearchResult> searchLocations(LocationQuery query)
             throws SispException;
 
     /**
@@ -120,7 +120,7 @@ public interface DestinationService {
      * @throws SispException
      *             the sisp exception
      */
-    SearchResponse<POISearchResult> getPoisByQuery(PoiQuery query)
+    SearchResponse<POISearchResult> searchPois(PoiQuery query)
             throws SispException;
 
     /**
@@ -132,6 +132,6 @@ public interface DestinationService {
      * @throws SispException
      *             the sisp exception
      */
-    Location getLocationById(String id) throws SispException;
+    Location getLocationById(Long id) throws SispException;
 
 }

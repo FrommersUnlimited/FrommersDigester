@@ -19,14 +19,14 @@ import com.wiley.frommers.feedunmarshaller.domain.SearchResponse;
 import com.wiley.frommers.feedunmarshaller.domain.Slide;
 import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
 import com.wiley.frommers.feedunmarshaller.exception.SispException;
-import com.wiley.frommers.feedunmarshaller.query.CategoryQuery;
+import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
 import com.wiley.frommers.feedunmarshaller.query.EventQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
 import com.wiley.frommers.feedunmarshaller.query.LocationQuery;
 import com.wiley.frommers.feedunmarshaller.query.PoiQuery;
 import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
-import com.wiley.frommers.feedunmarshaller.service.DestinationService;
+import com.wiley.frommers.feedunmarshaller.service.FeedService;
 
 /**
  * The Class DestinationServiceTest.
@@ -40,12 +40,12 @@ public class DestinationServiceTest extends AbstractFeedTest {
 
     /** The destination service. */
     @Autowired(required = true)
-    DestinationService destinationService;
+    FeedService feedService;
 
     /** The PARI s_ id. */
-    private static String PARIS_ID = "151160";
+    private static Long PARIS_ID = (long) 151160;
 
-    private static String IOI_ID;
+    private static Long IOI_ID;
 
     private static final String COUNTRY = "COUNTRY";
 
@@ -56,13 +56,13 @@ public class DestinationServiceTest extends AbstractFeedTest {
 
         EventQuery query = new EventQuery();
         // search paris event
-        query.setLocationId(PARIS_ID);
+        query.setLocationId(PARIS_ID.toString());
 
         // page size
         query.setNPerPage(15);
 
-        SearchResponse<EventSearchResult> eventResult = destinationService
-                .getEventsByQuery(query);
+        SearchResponse<EventSearchResult> eventResult = feedService
+                .searchEvents(query);
 
         assertNotNull(eventResult);
         assertTrue(eventResult.getTotalPageCount() > 0);
@@ -72,7 +72,7 @@ public class DestinationServiceTest extends AbstractFeedTest {
             assertNotNull(event.getId());
 
             if (IOI_ID == null)
-                IOI_ID = event.getId().toString();
+                IOI_ID = event.getId();
 
         }
 
@@ -86,10 +86,10 @@ public class DestinationServiceTest extends AbstractFeedTest {
             logger.debug("testGetCategoriesByQuery() - start");
         }
 
-        CategoryQuery query = new CategoryQuery();
+        AudienceInterestQuery query = new AudienceInterestQuery();
 
-        SearchResponse<AudienceInterestResult> categories = destinationService
-                .getCategoriesByQuery(query);
+        SearchResponse<AudienceInterestResult> categories = feedService
+                .searchAudienceInterests(query);
 
         assertNotNull(categories);
         assertTrue(categories.getTotalPageCount() > 0);
@@ -107,13 +107,13 @@ public class DestinationServiceTest extends AbstractFeedTest {
         DestinationMenuQuery query = new DestinationMenuQuery();
 
         // destination menu of Paris
-        query.setLocationId(PARIS_ID);
+        query.setLocationId(PARIS_ID.toString());
 
-        DestinationMenu destinationMenu = destinationService
+        DestinationMenu destinationMenu = feedService
                 .getDestinationMenuByQuery(query);
 
         assertNotNull(destinationMenu);
-        assertEquals(PARIS_ID, destinationMenu.getLocationId().toString());
+        assertEquals(PARIS_ID, destinationMenu.getLocationId());
 
         if (logger.isDebugEnabled()) {
             logger.debug("testGetDestinationMenuByQuery() - end");
@@ -125,7 +125,7 @@ public class DestinationServiceTest extends AbstractFeedTest {
             logger.debug("testGetItemOfInterestById() - start");
         }
 
-        ItemOfInterest ioi = destinationService.getItemOfInterestById(IOI_ID);
+        ItemOfInterest ioi = feedService.getItemOfInterestById(IOI_ID);
 
         assertNotNull(ioi.getName());
         assertNotNull(ioi.getId());
@@ -145,8 +145,8 @@ public class DestinationServiceTest extends AbstractFeedTest {
 
         query.setLocationType(COUNTRY);
 
-        SearchResponse<LocationSearchResult> locations = destinationService
-                .getLocationsByQuery(query);
+        SearchResponse<LocationSearchResult> locations = feedService
+                .searchLocations(query);
         assertNotNull(locations);
 
         for (LocationSearchResult loc : locations.getResults()) {
@@ -169,9 +169,9 @@ public class DestinationServiceTest extends AbstractFeedTest {
 
         GuideQuery query = new GuideQuery();
         query.setGuideStructureTypeId(GuideQuery.INTRODUCTION_TYPE_ID);
-        query.setLocationId(PARIS_ID);
+        query.setLocationId(PARIS_ID.toString());
 
-        GuideStructure guideStructure = destinationService
+        GuideStructure guideStructure = feedService
                 .getGuideStructureByQuery(query);
 
         assertNotNull(guideStructure);
@@ -190,9 +190,9 @@ public class DestinationServiceTest extends AbstractFeedTest {
         }
 
         SlideShowQuery query = new SlideShowQuery();
-        query.setLocationId(PARIS_ID);
+        query.setLocationId(PARIS_ID.toString());
 
-        Slideshow slideshow = destinationService.getSildesShowByQuery(query);
+        Slideshow slideshow = feedService.getSildesShowByQuery(query);
 
         assertNotNull(slideshow);
         assertNotNull(slideshow.getName());
@@ -216,11 +216,11 @@ public class DestinationServiceTest extends AbstractFeedTest {
         }
 
         PoiQuery query = new PoiQuery();
-        query.setLocationId(PARIS_ID);
+        query.setLocationId(PARIS_ID.toString());
         query.setType("HOTEL");
 
-        SearchResponse<POISearchResult> searchResponse = destinationService
-                .getPoisByQuery(query);
+        SearchResponse<POISearchResult> searchResponse = feedService
+                .searchPois(query);
 
         assertNotNull(searchResponse);
         assertNotNull(searchResponse.getResults());
@@ -228,7 +228,6 @@ public class DestinationServiceTest extends AbstractFeedTest {
         for (POISearchResult poi : searchResponse.getResults()) {
             assertNotNull(poi.getName());
             assertNotNull(poi.getType());
-
             assertEquals("HOTEL", poi.getType());
 
         }
@@ -243,12 +242,12 @@ public class DestinationServiceTest extends AbstractFeedTest {
             logger.debug("testGetLocationById() - start");
         }
 
-        Location location = destinationService.getLocationById(PARIS_ID);
+        Location location = feedService.getLocationById(PARIS_ID);
 
         assertNotNull(location);
         assertNotNull(location.getId());
 
-        assertEquals(PARIS_ID, location.getId().toString());
+        assertEquals(PARIS_ID, location.getId());
 
         LocationNode temp = location.getParent();
         while (temp != null) {

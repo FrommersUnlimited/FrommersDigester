@@ -70,4 +70,13 @@ public class MapCache {
         return ITEM_OF_INTEREST.get(id);
     }
 
+    public void clearCache() {
+        DESTINATION_MENU.clear();
+        GUIDE_STRUCTURE.clear();
+        SLIDE_SHOW.clear();
+        LOCATIONS.clear();
+        ITEM_OF_INTEREST.clear();
+
+    }
+
 }

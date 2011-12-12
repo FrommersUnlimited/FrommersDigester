@@ -7,9 +7,9 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class CategoryQuery extends AbstractQuery {
+public class AudienceInterestQuery extends FeedQuery {
 
-    public CategoryQuery() {
+    public AudienceInterestQuery() {
         super();
         // TODO do it in the context bean file
         queryParams.put("audienceInterestId", "530006");

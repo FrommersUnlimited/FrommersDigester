@@ -24,14 +24,12 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
  	   <value>com.wiley.frommers.feedunmarshaller.domain.Location</value>   	   
  </util:list>
 
-  <bean id ="destinationService" class="com.wiley.frommers.feedunmarshaller.service.DestinationServiceImpl">     
-       <property name="odfUrl" value="${site.url}"/>       
+  <bean id ="feedService" class="com.wiley.frommers.feedunmarshaller.service.FeedServiceImpl">     
+       <property name="odfUrl" value="${site.url}"/> 
+       <property name="cacheActive" value="${cacheActive}"/>                    
        <property name="marshaller" ref="marshaller"/>               
   </bean>
   
-  <bean id ="feedProxy" class="com.wiley.frommers.feedunmarshaller.cache.FeedProxy">     
-       <property name="destinationService" ref="destinationService"/>       
-  </bean>
   
   <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">    
 		<property name="location" value="classpath:default.properties"/>  <!--reads config.properties file-->  

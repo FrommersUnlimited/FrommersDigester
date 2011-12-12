@@ -7,7 +7,7 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class LocalizedQuery extends AbstractQuery {
+public class LocalizedQuery extends PaginatedFeedQuery {
 
     public static String LOCATION_ID_PARAM_NAME = "locationId";
 

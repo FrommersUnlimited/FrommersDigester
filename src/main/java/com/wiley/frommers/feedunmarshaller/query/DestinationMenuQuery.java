@@ -11,9 +11,15 @@ public class DestinationMenuQuery extends LocalizedQuery {
 
     public DestinationMenuQuery() {
         super();
-        // TODO Auto-generated constructor stub
-        // queryParams.put("guideStructureId", "250087");
-        // queryParams.put("autoHide", "true");
+
+    }
+
+    public void setGuideStructureId(String guideStructureId) {
+        queryParams.put("guideStructureId", guideStructureId);
+    }
+
+    public void setAutoHide(Boolean autoHide) {
+        queryParams.put("autoHide", autoHide.toString());
     }
 
 }

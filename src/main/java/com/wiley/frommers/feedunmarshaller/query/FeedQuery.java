@@ -11,27 +11,15 @@ import java.util.Map.Entry;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public abstract class AbstractQuery {
+public abstract class FeedQuery {
     protected Map<String, String> queryParams;
 
-    public AbstractQuery() {
+    public FeedQuery() {
         queryParams = new HashMap<String, String>();
     }
 
     public Map<String, String> getQueryParams() {
         return queryParams;
-    }
-
-    public void setQueryParams(Map<String, String> queryParams) {
-        this.queryParams = queryParams;
-    }
-
-    public void setNPerPage(int i) {
-        queryParams.put("nPerPage", String.valueOf(i));
-    }
-
-    public void showMax(boolean showMax) {
-        queryParams.put("showMax", String.valueOf(showMax));
     }
 
     public String toUrl() {
