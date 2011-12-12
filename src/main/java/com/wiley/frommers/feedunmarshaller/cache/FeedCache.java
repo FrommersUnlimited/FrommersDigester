@@ -1,9 +1,8 @@
 package com.wiley.frommers.feedunmarshaller.cache;
 
-
 public interface FeedCache {
 
-    <T> void put(String id, T o);
+    <T> void put(String key, T o);
 
     <T> T get(String id);
 
