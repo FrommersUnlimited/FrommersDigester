@@ -7,7 +7,7 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class GuideQuery extends LocationQuery {
+public class GuideQuery extends LocationSearchQuery {
 
     public static String INTRODUCTION_TYPE_ID = "557449";
 

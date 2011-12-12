@@ -19,8 +19,8 @@ import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
 import com.wiley.frommers.feedunmarshaller.query.EventSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
-import com.wiley.frommers.feedunmarshaller.query.LocationQuery;
-import com.wiley.frommers.feedunmarshaller.query.PoiQuery;
+import com.wiley.frommers.feedunmarshaller.query.LocationSearchQuery;
+import com.wiley.frommers.feedunmarshaller.query.PoiSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
 
 /**
@@ -63,7 +63,7 @@ public interface FeedService {
      * @throws SispException
      *             the sisp exception
      */
-    SearchResponse<POISearchResult> searchPois(PoiQuery query)
+    SearchResponse<POISearchResult> searchPois(PoiSearchQuery query)
             throws SispException;
 
     /**
@@ -110,7 +110,7 @@ public interface FeedService {
      * @throws SispException
      *             the sisp exception
      */
-    SearchResponse<LocationSearchResult> searchLocations(LocationQuery query)
+    SearchResponse<LocationSearchResult> searchLocations(LocationSearchQuery query)
             throws SispException;
 
     /**

@@ -7,7 +7,7 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class EventSearchQuery extends LocationQuery {
+public class EventSearchQuery extends LocationSearchQuery {
 
     public EventSearchQuery() {
         super();

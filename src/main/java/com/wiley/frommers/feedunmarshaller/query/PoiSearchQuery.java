@@ -7,9 +7,9 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class PoiQuery extends LocationQuery {
+public class PoiSearchQuery extends LocationSearchQuery {
 
-    public PoiQuery() {
+    public PoiSearchQuery() {
         super();
         // showMax(true);
         setNPerPage(50);

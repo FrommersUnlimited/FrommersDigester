@@ -7,9 +7,9 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 7 Nov 2011
  * 
  */
-public class LocationQuery extends PaginatedFeedQuery {
+public class LocationSearchQuery extends PaginatedFeedQuery {
 
-    public LocationQuery() {
+    public LocationSearchQuery() {
         super();
         showMax(false);
 

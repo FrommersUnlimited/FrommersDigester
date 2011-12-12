@@ -7,7 +7,7 @@ package com.wiley.frommers.feedunmarshaller.query;
  * @author fzerdoudi, created 13 Nov 2011
  * 
  */
-public class SlideShowQuery extends LocationQuery {
+public class SlideShowQuery extends LocationSearchQuery {
 
     public SlideShowQuery() {
         super();

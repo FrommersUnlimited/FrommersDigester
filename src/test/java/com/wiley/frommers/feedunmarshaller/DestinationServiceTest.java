@@ -23,8 +23,8 @@ import com.wiley.frommers.feedunmarshaller.query.AudienceInterestQuery;
 import com.wiley.frommers.feedunmarshaller.query.DestinationMenuQuery;
 import com.wiley.frommers.feedunmarshaller.query.EventSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.GuideQuery;
-import com.wiley.frommers.feedunmarshaller.query.LocationQuery;
-import com.wiley.frommers.feedunmarshaller.query.PoiQuery;
+import com.wiley.frommers.feedunmarshaller.query.LocationSearchQuery;
+import com.wiley.frommers.feedunmarshaller.query.PoiSearchQuery;
 import com.wiley.frommers.feedunmarshaller.query.SlideShowQuery;
 import com.wiley.frommers.feedunmarshaller.service.FeedService;
 
@@ -141,7 +141,7 @@ public class DestinationServiceTest extends AbstractFeedTest {
             logger.debug("testGetLocationsByQuery() - start");
         }
 
-        LocationQuery query = new LocationQuery();
+        LocationSearchQuery query = new LocationSearchQuery();
 
         query.setLocationType(COUNTRY);
 
@@ -215,7 +215,7 @@ public class DestinationServiceTest extends AbstractFeedTest {
             logger.debug("testGetPoisByQuery() - start");
         }
 
-        PoiQuery query = new PoiQuery();
+        PoiSearchQuery query = new PoiSearchQuery();
         query.setLocationId(PARIS_ID.toString());
         query.setType("HOTEL");
 
