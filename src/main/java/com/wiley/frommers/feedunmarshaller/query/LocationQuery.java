@@ -13,6 +13,8 @@ public class LocationQuery extends LocalizedQuery {
         super();
         // setNPerPage(100);
         showMax(false);
+        // queryParams.put("hasGuide", "true");
+
     }
 
     public void setLocationType(String type) {
