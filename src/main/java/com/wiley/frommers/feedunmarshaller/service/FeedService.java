@@ -10,6 +10,7 @@ import com.wiley.frommers.feedunmarshaller.domain.GuideStructure;
 import com.wiley.frommers.feedunmarshaller.domain.ItemOfInterest;
 import com.wiley.frommers.feedunmarshaller.domain.Location;
 import com.wiley.frommers.feedunmarshaller.domain.LocationSearchResult;
+import com.wiley.frommers.feedunmarshaller.domain.MainSearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.POISearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.SearchResponse;
 import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
@@ -39,6 +40,30 @@ public interface FeedService {
      *             the sisp exception
      */
     SearchResponse<EventSearchResult> searchEvents(EventQuery query)
+            throws SispException;
+
+    /**
+     * Search items of interests (event and poi).
+     * 
+     * @param query
+     *            the query
+     * @return the search response
+     * @throws SispException
+     *             the sisp exception
+     */
+    SearchResponse<MainSearchResult> searchIois(EventQuery query)
+            throws SispException;
+
+    /**
+     * Gets the pois by query.
+     * 
+     * @param query
+     *            the query
+     * @return the pois by query
+     * @throws SispException
+     *             the sisp exception
+     */
+    SearchResponse<POISearchResult> searchPois(PoiQuery query)
             throws SispException;
 
     /**
@@ -110,18 +135,6 @@ public interface FeedService {
      *             the sisp exception
      */
     Slideshow getSildesShowByQuery(SlideShowQuery query) throws SispException;
-
-    /**
-     * Gets the pois by query.
-     * 
-     * @param query
-     *            the query
-     * @return the pois by query
-     * @throws SispException
-     *             the sisp exception
-     */
-    SearchResponse<POISearchResult> searchPois(PoiQuery query)
-            throws SispException;
 
     /**
      * Gets the location by id.

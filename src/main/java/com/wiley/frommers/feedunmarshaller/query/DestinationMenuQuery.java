@@ -22,4 +22,10 @@ public class DestinationMenuQuery extends LocalizedQuery {
         queryParams.put("autoHide", autoHide.toString());
     }
 
+    @Override
+    public String getId() {
+
+        return "DestinationMenu" + getLocationId();
+    }
+
 }

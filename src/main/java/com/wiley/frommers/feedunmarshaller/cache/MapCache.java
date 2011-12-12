@@ -6,12 +6,6 @@ package com.wiley.frommers.feedunmarshaller.cache;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.wiley.frommers.feedunmarshaller.domain.DestinationMenu;
-import com.wiley.frommers.feedunmarshaller.domain.GuideStructure;
-import com.wiley.frommers.feedunmarshaller.domain.ItemOfInterest;
-import com.wiley.frommers.feedunmarshaller.domain.Location;
-import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
-
 /**
  * First implementation of the cahce usin hash map
  * 
@@ -19,64 +13,27 @@ import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
  * 
  */
 
-public class MapCache {
+public class MapCache implements FeedCache {
 
-    static Map<String, DestinationMenu> DESTINATION_MENU = new HashMap<String, DestinationMenu>();
-    static Map<String, GuideStructure> GUIDE_STRUCTURE = new HashMap<String, GuideStructure>();
-    static Map<String, Slideshow> SLIDE_SHOW = new HashMap<String, Slideshow>();
-    static Map<String, Location> LOCATIONS = new HashMap<String, Location>();
-    static Map<String, ItemOfInterest> ITEM_OF_INTEREST = new HashMap<String, ItemOfInterest>();
+    static Map<String, Object> CACHE = new HashMap<String, Object>();
 
-    public DestinationMenu getDestinationMenu(String id) {
-        return DESTINATION_MENU.get(id);
+    public <T> void put(String key, T value) {
+        CACHE.put(key, value);
+
     }
 
-    public GuideStructure getGuideStructure(String id) {
-        return GUIDE_STRUCTURE.get(id);
+    public <T> T get(String key) {
+        // TODO Auto-generated method stub
+        return (T) CACHE.get(key);
     }
 
-    public void addGuideStructure(GuideStructure guideStructure) {
-        if (guideStructure != null && guideStructure.getId() != null)
-            GUIDE_STRUCTURE.put(guideStructure.getId().toString(),
-                    guideStructure);
+    public void clear() {
+        CACHE.clear();
+
     }
 
-    public void addDestinationMenu(DestinationMenu destinationMenu) {
-        DESTINATION_MENU.put(destinationMenu.getLocationId().toString(),
-                destinationMenu);
-    }
-
-    public Slideshow getSlideshow(String id) {
-        return SLIDE_SHOW.get(id);
-    }
-
-    public void addSlideshow(String id, Slideshow slideShow) {
-        SLIDE_SHOW.put(id, slideShow);
-    }
-
-    public Location getLocation(String id) {
-        return LOCATIONS.get(id);
-    }
-
-    public void addLocation(Location location) {
-        LOCATIONS.put(location.getId().toString(), location);
-    }
-
-    public void addItemOfInterest(ItemOfInterest itemOfInterest) {
-        ITEM_OF_INTEREST.put(itemOfInterest.getId().toString(), itemOfInterest);
-    }
-
-    public ItemOfInterest getItemOfInterest(String id) {
-        return ITEM_OF_INTEREST.get(id);
-    }
-
-    public void clearCache() {
-        DESTINATION_MENU.clear();
-        GUIDE_STRUCTURE.clear();
-        SLIDE_SHOW.clear();
-        LOCATIONS.clear();
-        ITEM_OF_INTEREST.clear();
-
+    public boolean contains(String key) {
+        return CACHE.containsKey(key);
     }
 
 }

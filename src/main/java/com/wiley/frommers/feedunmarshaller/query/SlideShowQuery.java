@@ -24,7 +24,7 @@ public class SlideShowQuery extends LocalizedQuery {
     @Override
     public String getId() {
         // TODO Auto-generated method stub
-        return getLocationId();
+        return "Slideshow" + getLocationId();
     }
 
 }

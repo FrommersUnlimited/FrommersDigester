@@ -21,6 +21,7 @@ import com.wiley.frommers.feedunmarshaller.domain.GuideStructure;
 import com.wiley.frommers.feedunmarshaller.domain.ItemOfInterest;
 import com.wiley.frommers.feedunmarshaller.domain.Location;
 import com.wiley.frommers.feedunmarshaller.domain.LocationSearchResult;
+import com.wiley.frommers.feedunmarshaller.domain.MainSearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.POISearchResult;
 import com.wiley.frommers.feedunmarshaller.domain.SearchResponse;
 import com.wiley.frommers.feedunmarshaller.domain.Slideshow;
@@ -154,6 +155,14 @@ public class FeedServiceImpl implements FeedService {
         return eventResponse;
     }
 
+    public SearchResponse<MainSearchResult> searchIois(EventQuery query)
+            throws SispException {
+        final SearchResponse<MainSearchResult> eventResponse = executeQuery(
+                EVENT_SEARCH_FEED, query);
+
+        return eventResponse;
+    }
+
     public SearchResponse<AudienceInterestResult> searchAudienceInterests(
             AudienceInterestQuery query) throws SispException {
 
@@ -170,7 +179,7 @@ public class FeedServiceImpl implements FeedService {
         DestinationMenu result = null;
 
         if (cacheActive) {
-            result = MAP_CACHE.getDestinationMenu(query.getId());
+            result = MAP_CACHE.get(query.getId());
             if (result != null) {
                 logger.info("getDestinationMenuByQuery from sisp cache");
                 return result;
@@ -180,7 +189,7 @@ public class FeedServiceImpl implements FeedService {
         result = executeQuery(DESTINATION_MENU_FEED, query);
 
         if (cacheActive && result != null)
-            MAP_CACHE.addDestinationMenu(result);
+            MAP_CACHE.put(query.getId(), result);
 
         return result;
     }
@@ -189,7 +198,7 @@ public class FeedServiceImpl implements FeedService {
 
         ItemOfInterest result = null;
         if (cacheActive) {
-            result = MAP_CACHE.getItemOfInterest(id.toString());
+            result = MAP_CACHE.get(id.toString());
             if (result != null) {
                 logger.info("getItemOfInterestById from sisp cache");
                 return result;
@@ -203,7 +212,7 @@ public class FeedServiceImpl implements FeedService {
 
         result = (ItemOfInterest) marshaller.getXStream().fromXML(stream);
         if (cacheActive && result != null)
-            MAP_CACHE.addItemOfInterest(result);
+            MAP_CACHE.put(result.getId().toString(), result);
         logger.info("getItemOfInterestById from network");
 
         return result;
@@ -225,7 +234,7 @@ public class FeedServiceImpl implements FeedService {
         GuideStructure result = null;
 
         if (cacheActive) {
-            result = MAP_CACHE.getGuideStructure(query.getId());
+            result = MAP_CACHE.get(query.getId());
             if (result != null) {
                 logger.info("getGuideStructureByQuery from sisp cache");
                 return result;
@@ -235,7 +244,7 @@ public class FeedServiceImpl implements FeedService {
         result = executeQuery(GUIDE_STRUCTURE_FEED, query);
 
         if (cacheActive && result != null)
-            MAP_CACHE.addGuideStructure(result);
+            MAP_CACHE.put(result.getId().toString(), result);
         logger.info("getGuideStructureByQuery from http");
 
         return result;
@@ -244,10 +253,12 @@ public class FeedServiceImpl implements FeedService {
     // TODO refactore this method the return a list of Slideshows
     public Slideshow getSildesShowByQuery(SlideShowQuery query)
             throws SispException {
+
         Slideshow result = null;
+
         if (cacheActive) {
 
-            result = MAP_CACHE.getSlideshow(query.getId());
+            result = MAP_CACHE.get(query.getId());
             if (result != null)
                 return result;
 
@@ -270,7 +281,7 @@ public class FeedServiceImpl implements FeedService {
         result = (Slideshow) marshaller.getXStream().fromXML(stream);
 
         if (cacheActive && result != null)
-            MAP_CACHE.addSlideshow(query.getId(), result);
+            MAP_CACHE.put(query.getId(), result);
 
         logger.debug("getSildesShowByQuery() slideshow found = " + "("
                 + result.getSlideCount() + ")");
@@ -292,7 +303,7 @@ public class FeedServiceImpl implements FeedService {
         Location result = null;
 
         if (cacheActive) {
-            result = MAP_CACHE.getLocation(id.toString());
+            result = MAP_CACHE.get(id.toString());
             if (result != null)
                 return result;
 
@@ -303,7 +314,7 @@ public class FeedServiceImpl implements FeedService {
         result = (Location) marshaller.getXStream().fromXML(stream);
 
         if (cacheActive && result != null)
-            MAP_CACHE.addLocation(result);
+            MAP_CACHE.put(result.getId().toString(), result);
 
         logger.info("getLocationById from http");
 
