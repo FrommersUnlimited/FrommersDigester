@@ -67,4 +67,12 @@
 		</plugins>
 	</build>
 
+	<description>Java/Spring based digester of Frommers Feeds.</description>
+	<organization>
+		<name>Frommers Unlimited</name>
+		<url>http://www.frommers.biz</url>
+	</organization>
+	<scm>
+		<url>https://github.com/FrommersUnlimited/FrommersDigester</url>
+	</scm>
 </project>
