@@ -29,18 +29,18 @@ import com.wiley.frommers.digester.query.SlideShowSearchQuery;
 import com.wiley.frommers.digester.service.FeedService;
 
 /**
- * The Class DestinationServiceTest.
+ * Tests for FeedService
  */
-public class DestinationServiceTest extends AbstractFeedTest {
+public class FeedServiceTests extends AbstractFeedTest {
     /**
      * Logger for this class
      */
     private static final Logger logger = Logger
-            .getLogger(DestinationServiceTest.class);
+            .getLogger(FeedServiceTests.class);
 
     /** The destination service. */
     @Autowired(required = true)
-    FeedService feedService;
+    private FeedService feedService;
 
     /** The PARI s_ id. */
     private static Long PARIS_ID = (long) 151160;

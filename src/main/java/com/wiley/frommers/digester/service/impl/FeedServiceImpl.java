@@ -1,7 +1,7 @@
 /*
  * &copy; John Wiley &amp; Sons, Inc
  */
-package com.wiley.frommers.digester.service;
+package com.wiley.frommers.digester.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +10,7 @@ import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +37,12 @@ import com.wiley.frommers.digester.query.GuideQuery;
 import com.wiley.frommers.digester.query.LocationSearchQuery;
 import com.wiley.frommers.digester.query.PoiSearchQuery;
 import com.wiley.frommers.digester.query.SlideShowSearchQuery;
+import com.wiley.frommers.digester.service.FeedService;
 
 /**
- * @author fzerdoudi, created 7 Nov 2011
- * 
+ * Implementation of FeedService interface.
  */
 @Service
-@SuppressWarnings("unchecked")
 public class FeedServiceImpl implements FeedService {
 
     // TODO how to use a caching interface
@@ -59,19 +59,13 @@ public class FeedServiceImpl implements FeedService {
     private static final String POI_SEARCH_FEED = "poi_search.feed";
     private static final String LOCATION_FEED = "location.feed";
 
-    private String odfUrl;
+    protected static final Log LOGGER = LogFactory.getLog(FeedServiceImpl.class);
 
-    private boolean cacheActive = true;
+    @Value("${rootUrl}")
+    private String rootUrl;
 
-    public void setOdfUrl(String odfUrl) {
-        this.odfUrl = odfUrl;
-    }
-
-    public void setMarshaller(XStreamMarshaller marshaller) {
-        this.marshaller = marshaller;
-    }
-
-    protected final Log logger = LogFactory.getLog(getClass());
+    @Value("${cacheActive}")
+    private boolean cacheActive;
 
     @Autowired(required = true)
     private XStreamMarshaller marshaller;
@@ -94,7 +88,7 @@ public class FeedServiceImpl implements FeedService {
 
             return stream;
         } catch (IOException e) {
-            logger.error(e);
+            LOGGER.error(e);
             throw new SispHttpException(e);
         }
 
@@ -116,13 +110,14 @@ public class FeedServiceImpl implements FeedService {
     private <T> T executeQuery(String feed, FeedQuery query)
             throws SispHttpException {
 
-        final String feedUrl = buildFullFeedUrl(query, odfUrl + feed);
+        final String feedUrl = buildFullFeedUrl(query, rootUrl + feed);
 
         final InputStream stream = getHttpInputStream(feedUrl);
 
-        final T eventResponse = (T) marshaller.getXStream().fromXML(stream);
+        @SuppressWarnings("unchecked")
+        final T result = (T) marshaller.getXStream().fromXML(stream);
 
-        return eventResponse;
+        return result;
     }
 
     /**
@@ -149,27 +144,27 @@ public class FeedServiceImpl implements FeedService {
     public SearchResponse<EventSearchResult> searchEvents(EventSearchQuery query)
             throws SispException {
         // TODO see if we cache the search results
-        final SearchResponse<EventSearchResult> eventResponse = executeQuery(
+        final SearchResponse<EventSearchResult> result = executeQuery(
                 EVENT_SEARCH_FEED, query);
 
-        return eventResponse;
+        return result;
     }
 
     public SearchResponse<MainSearchResult> searchMains(EventSearchQuery query)
             throws SispException {
-        final SearchResponse<MainSearchResult> eventResponse = executeQuery(
+        final SearchResponse<MainSearchResult> result = executeQuery(
                 EVENT_SEARCH_FEED, query);
 
-        return eventResponse;
+        return result;
     }
 
     public SearchResponse<AudienceInterestResult> searchAudienceInterests(
             AudienceInterestQuery query) throws SispException {
 
-        final SearchResponse<AudienceInterestResult> eventResponse = executeQuery(
+        final SearchResponse<AudienceInterestResult> result = executeQuery(
                 AUDIENCE_INTEREST_SEARCH_FEED, query);
 
-        return eventResponse;
+        return result;
 
     }
 
@@ -181,7 +176,7 @@ public class FeedServiceImpl implements FeedService {
         if (cacheActive) {
             result = MAP_CACHE.get(query.getId());
             if (result != null) {
-                logger.info("getDestinationMenuByQuery from sisp cache");
+                LOGGER.info("getDestinationMenuByQuery from sisp cache");
                 return result;
             }
         }
@@ -200,12 +195,12 @@ public class FeedServiceImpl implements FeedService {
         if (cacheActive) {
             result = MAP_CACHE.get(id.toString());
             if (result != null) {
-                logger.info("getItemOfInterestById from sisp cache");
+                LOGGER.info("getItemOfInterestById from sisp cache");
                 return result;
             }
         }
 
-        final String feedUrl = odfUrl + ITEM_OF_INTEREST_FEED
+        final String feedUrl = rootUrl + ITEM_OF_INTEREST_FEED
                 + "?itemOfInterestId=" + id;
 
         final InputStream stream = getHttpInputStream(feedUrl);
@@ -213,7 +208,7 @@ public class FeedServiceImpl implements FeedService {
         result = (ItemOfInterest) marshaller.getXStream().fromXML(stream);
         if (cacheActive && result != null)
             MAP_CACHE.put(result.getId().toString(), result);
-        logger.info("getItemOfInterestById from network");
+        LOGGER.info("getItemOfInterestById from network");
 
         return result;
     }
@@ -221,10 +216,10 @@ public class FeedServiceImpl implements FeedService {
     public SearchResponse<LocationSearchResult> searchLocations(
             LocationSearchQuery query) throws SispException {
 
-        final SearchResponse<LocationSearchResult> eventResponse = executeQuery(
+        final SearchResponse<LocationSearchResult> result = executeQuery(
                 LOCATION_SEARCH_FEED, query);
 
-        return eventResponse;
+        return result;
 
     }
 
@@ -236,7 +231,7 @@ public class FeedServiceImpl implements FeedService {
         if (cacheActive) {
             result = MAP_CACHE.get(query.getId());
             if (result != null) {
-                logger.info("getGuideStructureByQuery from sisp cache");
+                LOGGER.info("getGuideStructureByQuery from sisp cache");
                 return result;
             }
         }
@@ -245,7 +240,7 @@ public class FeedServiceImpl implements FeedService {
 
         if (cacheActive && result != null)
             MAP_CACHE.put(result.getId().toString(), result);
-        logger.info("getGuideStructureByQuery from http");
+        LOGGER.info("getGuideStructureByQuery from http");
 
         return result;
     }
@@ -253,14 +248,14 @@ public class FeedServiceImpl implements FeedService {
     public SearchResponse<POISearchResult> searchPois(PoiSearchQuery query)
             throws SispException {
 
-        final SearchResponse<POISearchResult> eventResponse = executeQuery(
+        final SearchResponse<POISearchResult> result = executeQuery(
                 POI_SEARCH_FEED, query);
 
-        return eventResponse;
+        return result;
     }
 
     public Location getLocationById(Long id) throws SispException {
-        final String feedUrl = odfUrl + LOCATION_FEED + "?locationId=" + id;
+        final String feedUrl = rootUrl + LOCATION_FEED + "?locationId=" + id;
         Location result = null;
 
         if (cacheActive) {
@@ -277,7 +272,7 @@ public class FeedServiceImpl implements FeedService {
         if (cacheActive && result != null)
             MAP_CACHE.put(result.getId().toString(), result);
 
-        logger.info("getLocationById from http");
+        LOGGER.info("getLocationById from http");
 
         return result;
     }
@@ -291,7 +286,7 @@ public class FeedServiceImpl implements FeedService {
         final SearchResponse<SlideshowSearchResult> slidesResult = executeQuery(
                 SLIDE_SHOW_SEARCH_FEED, query);
 
-        logger.debug("getSildesShowByQuery() SlideshowSearchResult found = "
+        LOGGER.debug("getSildesShowByQuery() SlideshowSearchResult found = "
                 + "(" + slidesResult.getTotalResultCount() + ")");
 
         return slidesResult;
@@ -309,7 +304,7 @@ public class FeedServiceImpl implements FeedService {
 
         }
 
-        String feedUrl = odfUrl + SLIDE_SHOW_FEED + "?slideshowId=" + id;
+        String feedUrl = rootUrl + SLIDE_SHOW_FEED + "?slideshowId=" + id;
 
         final InputStream stream = getHttpInputStream(feedUrl);
 
@@ -318,7 +313,7 @@ public class FeedServiceImpl implements FeedService {
         if (cacheActive && result != null)
             MAP_CACHE.put(id.toString(), result);
 
-        logger.debug("getSildesShowById() slideshow found = " + "("
+        LOGGER.debug("getSildesShowById() slideshow found = " + "("
                 + result.getSlideCount() + ")");
 
         return result;
