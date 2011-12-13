@@ -6,26 +6,9 @@ package com.wiley.frommers.digester;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.wiley.frommers.digester.domain.AudienceInterestResult;
-import com.wiley.frommers.digester.domain.DestinationMenu;
-import com.wiley.frommers.digester.domain.EventSearchResult;
-import com.wiley.frommers.digester.domain.GuideStructure;
-import com.wiley.frommers.digester.domain.ItemOfInterest;
 import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationNode;
-import com.wiley.frommers.digester.domain.LocationSearchResult;
-import com.wiley.frommers.digester.domain.POISearchResult;
-import com.wiley.frommers.digester.domain.SearchResponse;
-import com.wiley.frommers.digester.domain.Slideshow;
-import com.wiley.frommers.digester.domain.SlideshowSearchResult;
 import com.wiley.frommers.digester.exception.SispException;
-import com.wiley.frommers.digester.query.AudienceInterestQuery;
-import com.wiley.frommers.digester.query.DestinationMenuQuery;
-import com.wiley.frommers.digester.query.EventSearchQuery;
-import com.wiley.frommers.digester.query.GuideQuery;
-import com.wiley.frommers.digester.query.LocationSearchQuery;
-import com.wiley.frommers.digester.query.PoiSearchQuery;
-import com.wiley.frommers.digester.query.SlideShowSearchQuery;
 import com.wiley.frommers.digester.service.FeedService;
 
 /**
@@ -48,7 +31,39 @@ public class FeedServiceTests extends AbstractFeedTest {
     private static Long IOI_ID;
 
     private static final String COUNTRY = "COUNTRY";
+    
+    public void testGetLocationById() throws SispException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("testGetLocationById() - start");
+        }
 
+        Location location = feedService.getLocationById(PARIS_ID);
+
+        assertNotNull(location);
+        assertNotNull(location.getId());
+
+        assertEquals(PARIS_ID, location.getId());
+
+        LocationNode temp = location.getParent();
+        while (temp != null) {
+
+            assertNotNull(temp);
+            assertNotNull(temp.getName());
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("testGetLocationById() - location : "
+                        + temp.getName());
+            }
+
+            temp = temp.getParent();
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("testGetLocationById() - end");
+        }
+    }
+
+    /*
     public void testGetEventByQuery() throws SispException {
         if (logger.isDebugEnabled()) {
             logger.debug("testGetEventByQuery() - start");
@@ -239,36 +254,5 @@ public class FeedServiceTests extends AbstractFeedTest {
             logger.debug("testGetPoisByQuery() - end");
         }
     }
-
-    public void testGetLocationById() throws SispException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("testGetLocationById() - start");
-        }
-
-        Location location = feedService.getLocationById(PARIS_ID);
-
-        assertNotNull(location);
-        assertNotNull(location.getId());
-
-        assertEquals(PARIS_ID, location.getId());
-
-        LocationNode temp = location.getParent();
-        while (temp != null) {
-
-            assertNotNull(temp);
-            assertNotNull(temp.getName());
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("testGetLocationById() - location : "
-                        + temp.getName());
-            }
-
-            temp = temp.getParent();
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("testGetLocationById() - end");
-        }
-    }
-
+    */
 }

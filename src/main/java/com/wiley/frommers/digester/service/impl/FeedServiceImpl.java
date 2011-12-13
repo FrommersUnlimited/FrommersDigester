@@ -3,8 +3,7 @@
  */
 package com.wiley.frommers.digester.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -15,29 +14,15 @@ import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.stereotype.Service;
 
 import com.wiley.frommers.digester.cache.MapCache;
-import com.wiley.frommers.digester.domain.AudienceInterestResult;
-import com.wiley.frommers.digester.domain.DestinationMenu;
-import com.wiley.frommers.digester.domain.EventSearchResult;
 import com.wiley.frommers.digester.domain.GuideStructure;
 import com.wiley.frommers.digester.domain.ItemOfInterest;
 import com.wiley.frommers.digester.domain.Location;
-import com.wiley.frommers.digester.domain.LocationSearchResult;
-import com.wiley.frommers.digester.domain.MainSearchResult;
-import com.wiley.frommers.digester.domain.POISearchResult;
-import com.wiley.frommers.digester.domain.SearchResponse;
 import com.wiley.frommers.digester.domain.Slideshow;
-import com.wiley.frommers.digester.domain.SlideshowSearchResult;
 import com.wiley.frommers.digester.exception.SispException;
 import com.wiley.frommers.digester.exception.SispHttpException;
-import com.wiley.frommers.digester.query.AudienceInterestQuery;
-import com.wiley.frommers.digester.query.DestinationMenuQuery;
-import com.wiley.frommers.digester.query.EventSearchQuery;
-import com.wiley.frommers.digester.query.FeedQuery;
-import com.wiley.frommers.digester.query.GuideQuery;
-import com.wiley.frommers.digester.query.LocationSearchQuery;
-import com.wiley.frommers.digester.query.PoiSearchQuery;
-import com.wiley.frommers.digester.query.SlideShowSearchQuery;
 import com.wiley.frommers.digester.service.FeedService;
+import com.wiley.frommers.digester.util.Feed;
+import com.wiley.frommers.digester.util.FeedUrlBuilder;
 
 /**
  * Implementation of FeedService interface.
@@ -48,22 +33,11 @@ public class FeedServiceImpl implements FeedService {
     // TODO how to use a caching interface
     private static final MapCache MAP_CACHE = new MapCache();
 
-    private static final String EVENT_SEARCH_FEED = "event_search.feed";
-    private static final String DESTINATION_MENU_FEED = "destination_menu.feed";
-    private static final String AUDIENCE_INTEREST_SEARCH_FEED = "audience_interest_search.feed";
-    private static final String ITEM_OF_INTEREST_FEED = "item_of_interest.feed";
-    private static final String LOCATION_SEARCH_FEED = "location_search.feed";
-    private static final String GUIDE_STRUCTURE_FEED = "guide_structure.feed";
-    private static final String SLIDE_SHOW_FEED = "slideshow.feed";
-    private static final String SLIDE_SHOW_SEARCH_FEED = "slideshow_search.feed";
-    private static final String POI_SEARCH_FEED = "poi_search.feed";
-    private static final String LOCATION_FEED = "location.feed";
-
     protected static final Log LOGGER = LogFactory.getLog(FeedServiceImpl.class);
 
     @Value("${rootUrl}")
     private String rootUrl;
-
+    
     @Value("${cacheActive}")
     private boolean cacheActive;
 
@@ -71,102 +45,131 @@ public class FeedServiceImpl implements FeedService {
     private XStreamMarshaller marshaller;
 
     /**
-     * Gets the http input stream of the feed.
-     * 
-     * @param url
-     *            the feeds url
-     * @return the http input stream
-     * @throws SispHttpException
-     *             the sisp http exception
-     */
-    private InputStream getHttpInputStream(String url) throws SispHttpException {
-
-        try {
-            URL _url = new URL(url);
-
-            InputStream stream = _url.openConnection().getInputStream();
-
-            return stream;
-        } catch (IOException e) {
-            LOGGER.error(e);
-            throw new SispHttpException(e);
-        }
-
-    }
-
-    /**
      * Execute query and unmarshal the inputStream to a java object.
      * 
      * @param <T>
      *            the java object type
-     * @param feed
-     *            the feed name
-     * @param query
-     *            the query
-     * @return the t
+     * @param url
+     *            the url
      * @throws SispHttpException
      *             the sisp http exception
      */
-    private <T> T executeQuery(String feed, FeedQuery query)
-            throws SispHttpException {
+    @SuppressWarnings("unchecked")
+    private <T> T executeFeedRequest(URL url) {
+        return (T) marshaller.getXStream().fromXML(url);
+    }
 
-        final String feedUrl = buildFullFeedUrl(query, rootUrl + feed);
+    @SuppressWarnings("unchecked")
+    private <T> T getById(String feedCode, String idName, Long idVal) throws SispException {
+        T result = null;
 
-        final InputStream stream = getHttpInputStream(feedUrl);
+        if (cacheActive) {
+            result = MAP_CACHE.get(idVal.toString());
+            if (result != null) {
+                return result;
+            }
+        }
 
-        @SuppressWarnings("unchecked")
-        final T result = (T) marshaller.getXStream().fromXML(stream);
+        FeedUrlBuilder urlBuilder = new FeedUrlBuilder(rootUrl, feedCode);
+        urlBuilder.addParameter(idName, idVal);
+        
+        URL url;
+        try {
+            url = urlBuilder.toURL();
+        } catch(MalformedURLException e) {
+            throw new SispException("Unable to construct url: " + urlBuilder.toString());
+        }
+        
+        result = (T) executeFeedRequest(url);
+
+        if (cacheActive && result != null) {
+            MAP_CACHE.put(idVal.toString(), result);
+        }
 
         return result;
     }
-
-    /**
-     * Builds the full feed url from the feed name and the query parameters.
-     * 
-     * @param query
-     *            the query
-     * @param feed
-     *            the feed
-     * @return the string
-     */
-    private static String buildFullFeedUrl(FeedQuery query, String feed) {
-        String paramUrl = query.toUrl();
-        String fullUrl;
-        if (paramUrl != null)
-            fullUrl = feed + paramUrl;
-        else
-            fullUrl = feed;
-
-        return fullUrl;
-
+    
+    
+    @Override
+    public Slideshow getSlideshowById(Long slideshowId) throws SispException {
+        return (Slideshow) getById(Feed.SLIDESHOW.getCode(), Feed.SLIDESHOW.getIdName(), 
+                slideshowId);
     }
 
+    @Override
+    public Location getLocationById(Long locationId) throws SispException {
+        return (Location) getById(Feed.LOCATION.getCode(), Feed.LOCATION.getIdName(), 
+                locationId);
+    }
+
+    @Override
+    public GuideStructure getGuideStructureById(Long guideStructureId)
+            throws SispException {
+        return (GuideStructure) getById(Feed.GUIDE_STRUCTURE.getCode(), Feed.GUIDE_STRUCTURE.getIdName(), 
+                guideStructureId);
+    }
+
+    @Override
+    public ItemOfInterest getItemOfInterestById(Long itemOfInterestId)
+            throws SispException {
+        return (ItemOfInterest) getById(Feed.ITEM_OF_INTEREST.getCode(), Feed.ITEM_OF_INTEREST.getIdName(), 
+                itemOfInterestId);
+    }
+
+    /*
+    @Override
+    public DestinationMenu getDestinationMenuByLocationId(Long locationId)
+            throws SispException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public SearchResponse<EventSearchResult> searchEvents(EventSearchQuery query)
             throws SispException {
-        // TODO see if we cache the search results
-        final SearchResponse<EventSearchResult> result = executeQuery(
-                EVENT_SEARCH_FEED, query);
-
-        return result;
+        // TODO Auto-generated method stub
+        return null;
     }
 
+    @Override
     public SearchResponse<MainSearchResult> searchMains(EventSearchQuery query)
             throws SispException {
-        final SearchResponse<MainSearchResult> result = executeQuery(
-                EVENT_SEARCH_FEED, query);
-
-        return result;
+        // TODO Auto-generated method stub
+        return null;
     }
 
+    @Override
+    public SearchResponse<POISearchResult> searchPois(PoiSearchQuery query)
+            throws SispException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public SearchResponse<AudienceInterestResult> searchAudienceInterests(
             AudienceInterestQuery query) throws SispException {
-
-        final SearchResponse<AudienceInterestResult> result = executeQuery(
-                AUDIENCE_INTEREST_SEARCH_FEED, query);
-
-        return result;
-
+        // TODO Auto-generated method stub
+        return null;
     }
+
+    @Override
+    public SearchResponse<LocationSearchResult> searchLocations(
+            LocationSearchQuery query) throws SispException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public SearchResponse<SlideshowSearchResult> searchSlideshows(
+            SlideShowSearchQuery query) throws SispException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    
+    
+    
+    /*
 
     public DestinationMenu getDestinationMenuByQuery(DestinationMenuQuery query)
             throws SispException {
@@ -318,5 +321,32 @@ public class FeedServiceImpl implements FeedService {
 
         return result;
     }
+    
+    public SearchResponse<EventSearchResult> searchEvents(EventSearchQuery query)
+            throws SispException {
+        // TODO see if we cache the search results
+        final SearchResponse<EventSearchResult> result = executeQuery(
+                EVENT_SEARCH_FEED, query);
+
+        return result;
+    }
+
+    public SearchResponse<MainSearchResult> searchMains(EventSearchQuery query)
+            throws SispException {
+        final SearchResponse<MainSearchResult> result = executeQuery(
+                EVENT_SEARCH_FEED, query);
+
+        return result;
+    }
+
+    public SearchResponse<AudienceInterestResult> searchAudienceInterests(
+            AudienceInterestQuery query) throws SispException {
+
+        final SearchResponse<AudienceInterestResult> result = executeQuery(
+                AUDIENCE_INTEREST_SEARCH_FEED, query);
+
+        return result;
+
+    }*/
 
 }
