@@ -77,18 +77,9 @@ public class FrommersDigester {
     	this.xstream.processAnnotations(ANNOTATED_CLASSES);
     }
 
-    /**
-     * Execute query and unmarshall the inputStream to a java object.
-     * 
-     * @param <T>
-     *            the java object type
-     * @param url
-     *            the url
-     * @throws SispHttpException
-     *             the sisp http exception
-     */
+    
     @SuppressWarnings("unchecked")
-    private <T> T executeFeedRequest(String urlStr) throws FrommersFeedException {
+	private <T> T executeFeedRequest(String urlStr) throws FrommersFeedException {
     	URL url;
         try {
             url = new URL(urlStr);
@@ -109,12 +100,11 @@ public class FrommersDigester {
                 return result;
             }
         }
-
         FeedUrlBuilder urlBuilder = new FeedUrlBuilder(rootUrl, feedCode);
         urlBuilder.addParameter(idName, idVal);
         
         result = (T) executeFeedRequest(urlBuilder.toString());
-
+        
         if (cacheActive && result != null) {
             MAP_CACHE.put(idVal.toString(), result);
         }
@@ -127,7 +117,6 @@ public class FrommersDigester {
         return (Slideshow) getById(Feed.SLIDESHOW.getCode(), Feed.SLIDESHOW.getIdName(), 
                 slideshowId);
     }
-
     public Location getLocationById(Long locationId) throws FrommersFeedException {
         return (Location) getById(Feed.LOCATION.getCode(), Feed.LOCATION.getIdName(), 
                 locationId);

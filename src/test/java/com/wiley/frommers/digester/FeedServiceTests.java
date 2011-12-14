@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationNode;
 
+
 /**
  * Tests for digester
  */
@@ -36,7 +37,6 @@ public class FeedServiceTests extends AbstractFeedTest {
 
         assertNotNull(location);
         assertNotNull(location.getId());
-
         assertEquals(PARIS_ID, location.getId());
 
         LocationNode temp = location.getParent();
@@ -46,15 +46,15 @@ public class FeedServiceTests extends AbstractFeedTest {
             assertNotNull(temp.getName());
 
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("testGetLocationById() - location : "
-                        + temp.getName());
+                LOGGER.debug("testGetLocationById() - location : "+ temp.getName());
             }
 
             temp = temp.getParent();
         }
-
+        
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("testGetLocationById() - end");
+
         }
     }
 
@@ -245,8 +245,13 @@ public class FeedServiceTests extends AbstractFeedTest {
 
         }
 
+<<<<<<< HEAD
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("testGetPoisByQuery() - end");
+=======
+        if (logger.isDebugEnabled()) {
+            logger.debug("testGetPoisByQuery() - end");
+>>>>>>> 4a717f0ec2a3db4e675ee3f7ea6312d05d773aaf
         }
     }
     */
