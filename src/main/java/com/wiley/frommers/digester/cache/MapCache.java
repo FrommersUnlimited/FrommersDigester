@@ -1,6 +1,3 @@
-/*
- * &copy; John Wiley &amp; Sons, Inc
- */
 package com.wiley.frommers.digester.cache;
 
 import java.util.HashMap;

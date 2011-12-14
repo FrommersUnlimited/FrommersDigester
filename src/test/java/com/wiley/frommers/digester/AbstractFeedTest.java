@@ -1,10 +1,9 @@
 package com.wiley.frommers.digester;
 
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit38.AbstractJUnit38SpringContextTests;
+import junit.framework.TestCase;
 
-@ContextConfiguration("/feedContext.xml")
-public abstract class AbstractFeedTest extends
-        AbstractJUnit38SpringContextTests {
-
+public abstract class AbstractFeedTest extends TestCase {
+	
+	public static final String ROOT_URL = "http://demosite.frommers.biz/frommers";
+    public static final boolean CACHE_ACTIVE = true;
 }
