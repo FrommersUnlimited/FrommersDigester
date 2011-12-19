@@ -6,7 +6,6 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
-import com.wiley.frommers.digester.cache.MapCache;
 import com.wiley.frommers.digester.domain.AudienceInterestResult;
 import com.wiley.frommers.digester.domain.DestinationMenu;
 import com.wiley.frommers.digester.domain.EventSearchResult;
@@ -19,14 +18,13 @@ import com.wiley.frommers.digester.domain.POISearchResult;
 import com.wiley.frommers.digester.domain.SearchResponse;
 import com.wiley.frommers.digester.domain.Slideshow;
 import com.wiley.frommers.digester.domain.SlideshowSearchResult;
+import com.wiley.frommers.digester.query.MainSearchQuery;
+import com.wiley.frommers.digester.query.Query;
 
 /**
  * Implementation of FeedService interface.
  */
 public class FrommersDigester {
-
-    // TODO how to use a caching interface
-    private static final MapCache MAP_CACHE = new MapCache();
 
 	protected static final Logger LOGGER = Logger.getLogger(FrommersDigester.class);
 	
@@ -42,6 +40,10 @@ public class FrommersDigester {
     private final boolean cacheActive;
     private final XStream xstream;
     
+    // --------------------------------------------------------
+    // static singleton instance methods
+    // --------------------------------------------------------
+    
     /**
      * Singleton access method.  Provide rootUrl and cacheActive to 
      * configure instance.
@@ -52,7 +54,6 @@ public class FrommersDigester {
     		LOGGER.debug("FeedService.getInstance creating new FeedService instance");
     		instance = new FrommersDigester(rootUrl, cacheActive);
     	}
-    	
     	return instance;
     }
     
@@ -70,6 +71,10 @@ public class FrommersDigester {
     	return instance;
     }
     
+    // --------------------------------------------------------
+    // private constructor to restrict creation
+    // --------------------------------------------------------
+    
     private FrommersDigester(String rootUrl, boolean cacheActive) {
     	this.rootUrl = rootUrl;
     	this.cacheActive = cacheActive;
@@ -77,41 +82,72 @@ public class FrommersDigester {
     	this.xstream.processAnnotations(ANNOTATED_CLASSES);
     }
 
-    
+    /**
+     * Call feed using an ID name and value.  Used mostly for get* methods.
+     * 
+     * @param feedCode
+     * @param idName
+     * @param idVal
+     * @return
+     * @throws FrommersFeedException
+     */
     @SuppressWarnings("unchecked")
-	private <T> T executeFeedRequest(String urlStr) throws FrommersFeedException {
-    	URL url;
+    private <T> T getById(String feedCode, String idName, Long idVal) throws FrommersFeedException {
+        T result = null;
+
+        result = (T) getFeedResponse(FeedUrlBuilder.createUrl(rootUrl, feedCode, idName, idVal));
+
+        return result;
+    }
+    
+    /**
+     * Call feed using a custom Query object.  Used mostly for search* methods.
+     * 
+     * @param feedCode
+     * @param query
+     * @return
+     * @throws FrommersFeedException
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T getByQuery(String feedCode, Query query) throws FrommersFeedException {
+        return (T) getFeedResponse(FeedUrlBuilder.createUrl(rootUrl, feedCode, query));
+    }
+    
+    /**
+     * Simple method that takes a URL and executes a HTTP request to the feed
+     * server.
+     * 
+     * @param urlStr
+     * @return
+     * @throws FrommersFeedException
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T getFeedResponse(String urlStr) throws FrommersFeedException {
+        
+        if (cacheActive) {
+            // TODO: Implement URL based caching.  Different cache configurations for different
+            // feed types (configurable)
+        }
+        
+        URL url;
         try {
             url = new URL(urlStr);
         } catch(MalformedURLException e) {
             throw new FrommersFeedException("Unable to construct url: " + urlStr);
         }
-        
-        return (T) xstream.fromXML(url);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getById(String feedCode, String idName, Long idVal) throws FrommersFeedException {
-        T result = null;
-
-        if (cacheActive) {
-            result = MAP_CACHE.get(idVal.toString());
-            if (result != null) {
-                return result;
-            }
-        }
-        FeedUrlBuilder urlBuilder = new FeedUrlBuilder(rootUrl, feedCode);
-        urlBuilder.addParameter(idName, idVal);
-        
-        result = (T) executeFeedRequest(urlBuilder.toString());
+        LOGGER.trace("executeFeedRequest: " + urlStr);
+        T result = (T) xstream.fromXML(url); 
         
         if (cacheActive && result != null) {
-            MAP_CACHE.put(idVal.toString(), result);
+            // TODO: Implement URL based caching
         }
-
+        
         return result;
     }
     
+    // --------------------------------------------------------
+    // get methods that return 1 object
+    // --------------------------------------------------------
     
     public Slideshow getSlideshowById(Long slideshowId) throws FrommersFeedException {
         return (Slideshow) getById(Feed.SLIDESHOW.getCode(), Feed.SLIDESHOW.getIdName(), 
@@ -132,6 +168,17 @@ public class FrommersDigester {
             throws FrommersFeedException {
         return (ItemOfInterest) getById(Feed.ITEM_OF_INTEREST.getCode(), Feed.ITEM_OF_INTEREST.getIdName(), 
                 itemOfInterestId);
+    }
+    
+    // --------------------------------------------------------
+    // search based methods that return SearchResponse objects
+    // --------------------------------------------------------
+    
+    @SuppressWarnings("unchecked")
+    public SearchResponse<MainSearchResult> mainSearch(MainSearchQuery query)
+            throws FrommersFeedException {
+        return (SearchResponse<MainSearchResult>) getByQuery(
+                Feed.MAIN_SEARCH.getCode(), query);
     }
 
     /*

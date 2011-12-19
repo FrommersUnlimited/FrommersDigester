@@ -7,6 +7,9 @@ import org.apache.log4j.Logger;
 
 import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationNode;
+import com.wiley.frommers.digester.domain.MainSearchResult;
+import com.wiley.frommers.digester.domain.SearchResponse;
+import com.wiley.frommers.digester.query.MainSearchQuery;
 
 
 /**
@@ -56,6 +59,14 @@ public class FeedServiceTests extends AbstractFeedTest {
             LOGGER.debug("testGetLocationById() - end");
 
         }
+    }
+    
+    public void testGetMainSearchSimple() throws FrommersFeedException {
+        MainSearchQuery query = new MainSearchQuery();
+        SearchResponse<MainSearchResult> resp = digester.mainSearch(query);
+        assertNotNull(resp);
+        assertTrue(resp.getCurrentPage() == 1);
+        assertTrue(resp.getTotalResultCount() > 0);
     }
 
     /*

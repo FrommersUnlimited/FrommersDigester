@@ -5,17 +5,18 @@ package com.wiley.frommers.digester;
  */
 public enum Feed {
 
-    ITEM_OF_INTEREST("item_of_interest", "itemOfInterestId"),
     DESTINATION_MENU_FEED("destination_menu"),
     GUIDE_STRUCTURE("guide_structure", "guideStructureId"),
+    ITEM_OF_INTEREST("item_of_interest", "itemOfInterestId"),
     LOCATION("location", "locationId"),
-    SLIDESHOW("slideshow", "slideshowId"),
     MEDIA("media", "mediaId"),
+    SLIDESHOW("slideshow", "slideshowId"),
     AUDIENCE_INTEREST_SEARCH("audience_interest_search"),
-    POI_SEARCH("poi_search"),
     EVENT_SEARCH("event_search"),
     LOCATION_SEARCH("location_search"),
+    MAIN_SEARCH("main_search"),
     MEDIA_SEARCH("media_search"),
+    POI_SEARCH("poi_search"),
     SLIDESHOW_SEARCH("slideshow_search");
     
     private final String code;
