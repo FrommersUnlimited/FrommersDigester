@@ -102,11 +102,7 @@ public class FrommersDigester {
      */
     @SuppressWarnings("unchecked")
     private <T> T getById(String feedCode, String idName, Long idVal) throws FrommersFeedException {
-        T result = null;
-
-        result = (T) getFeedResponse(FeedUrlBuilder.createUrl(rootUrl, feedCode, idName, idVal));
-
-        return result;
+        return (T) getFeedResponse(FeedUrlBuilder.createUrl(rootUrl, feedCode, idName, idVal));
     }
     
     /**
