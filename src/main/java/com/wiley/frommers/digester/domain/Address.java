@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 /**
  * Representation of a postal address.
  * 
+ * @see ItemOfInterestLocation.
  * @author rwatts, created 15 Mar 2010
  */
 public class Address {

@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * A named URL linking to deep content. Can also contain children.
@@ -27,13 +26,7 @@ public class DestinationLink {
     private String feedQuery;
     @XStreamAsAttribute()
     private String url;
-
-    @XStreamOmitField
-    private boolean selected;
-
-    @XStreamOmitField
-    private boolean childSelected;
-
+    
     @XStreamAlias("children")
     private List<DestinationLink> children;
 
@@ -82,22 +75,6 @@ public class DestinationLink {
 
     public String getFeedQuery() {
         return feedQuery;
-    }
-
-    public boolean getSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public boolean isChildSelected() {
-        return childSelected;
-    }
-
-    public void setChildSelected(boolean childSelected) {
-        this.childSelected = childSelected;
     }
 
 }

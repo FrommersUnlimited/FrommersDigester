@@ -14,7 +14,7 @@ public class FeedUrlBuilder {
     // --------------------------------------------------------
     // static singleton instance methods
     // --------------------------------------------------------
-    
+
     public static final String createUrl(String urlRoot, String feedCode,
             String idName, Long idVal) {
         FeedUrlBuilder url = new FeedUrlBuilder(urlRoot, feedCode);
@@ -30,8 +30,8 @@ public class FeedUrlBuilder {
     private final String urlRoot;
     private final String feedCode;
     private final Map<String, String> paramMap = new HashMap<String, String>();
-    
-    private FeedUrlBuilder(String urlRoot, String feedCode) {
+
+    public FeedUrlBuilder(String urlRoot, String feedCode) {
         this.urlRoot = urlRoot;
         this.feedCode = feedCode;
     }
@@ -40,6 +40,10 @@ public class FeedUrlBuilder {
         this.urlRoot = urlRoot;
         this.feedCode = feedCode;
         this.paramMap.putAll(query.getQueryParameters());
+    }
+    
+    public void addParameter(String name, String val) {
+        this.paramMap.put(name,  val);
     }
 
     @Override

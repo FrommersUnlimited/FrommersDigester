@@ -21,21 +21,15 @@ public abstract class AbstractSearchQuery implements Query {
     }
 
     public void setPage(int page) {
-        addParameter(QueryParams.PARAM_NAME_PAGE.getName(), String.valueOf(page));
+        addParameter(QueryParams.PAGE.getName(), String.valueOf(page));
     }
 
     public void setNPerPage(int nPerPage) {
-        addParameter(QueryParams.PARAM_NAME_N_PER_PAGE.getName(), String.valueOf(nPerPage));
+        addParameter(QueryParams.N_PER_PAGE.getName(), String.valueOf(nPerPage));
     }
 
     public void setQuery(String query) {
-        addParameter(QueryParams.PARAM_NAME_QUERY.getName(), query);
+        addParameter(QueryParams.QUERY.getName(), query);
     }
-
-    public void setType(String type) {
-        addParameter(QueryParams.PARAM_NAME_TYPE.getName(), type);
-    }
-
-    
 
 }

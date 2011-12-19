@@ -11,27 +11,20 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * An abstract SearchResponse that contains the results and total count.
- * 
+ *
  * @author rwatts, created 14 Sep 2009
  */
 @XStreamAlias("searchResponse")
 public class SearchResponse<T extends SearchResult> {
 
-    @XStreamImplicit()
-    private List<T> results;
-
-    @XStreamAsAttribute
-    private int totalResultCount;
-    @XStreamAsAttribute
-    private int currentPage;
-    @XStreamAsAttribute
-    private int currentPageResultCount;
-    @XStreamAsAttribute
-    private int totalPageCount;
-    @XStreamAsAttribute
-    private String sort;
-    @XStreamAsAttribute
-    private String sortDirection;
+    @XStreamImplicit() private List<T> results;
+    
+    @XStreamAsAttribute private int totalResultCount;
+    @XStreamAsAttribute private int currentPage;
+    @XStreamAsAttribute private int currentPageResultCount;
+    @XStreamAsAttribute private int totalPageCount;
+    @XStreamAsAttribute private String sort;
+    @XStreamAsAttribute private String sortDirection;
 
     public List<T> getResults() {
         return results;
@@ -40,19 +33,19 @@ public class SearchResponse<T extends SearchResult> {
     public void setResults(List<T> results) {
         this.results = results;
     }
-
+    
     public int getTotalResultCount() {
         return totalResultCount;
     }
-
+    
     public int getCurrentPage() {
         return currentPage;
     }
-
+    
     public int getCurrentPageResultCount() {
         return currentPageResultCount;
     }
-
+    
     public void setTotalPageCount(int totalPageCount) {
         this.totalPageCount = totalPageCount;
     }
@@ -68,11 +61,11 @@ public class SearchResponse<T extends SearchResult> {
     public void setCurrentPageResultCount(int currentPageResultCount) {
         this.currentPageResultCount = currentPageResultCount;
     }
-
+    
     public int getTotalPageCount() {
         return totalPageCount;
     }
-
+    
     public String getSort() {
         return sort;
     }

@@ -14,7 +14,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * A GuideStructure representation. A GuideStructure represents a section of a
  * guide, which is hierarchical in that it can have a parent GuideStructure.
  * 
- * @see Guide
+ * @see Guide 
  * @author tpatel, created 08 June 2009
  */
 @XStreamAlias("guideStructure")

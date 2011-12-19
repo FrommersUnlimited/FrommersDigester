@@ -73,6 +73,19 @@ public class ItemOfInterest {
     @XStreamAlias("contactInfo")
     private ContactInfo contactInfo;
 
+    @XStreamAsAttribute
+    private Long whatsonwhenId;
+    @XStreamAsAttribute
+    private Long frommersAccommodationId;
+    @XStreamAsAttribute
+    private Long frommersAttractionId;
+    @XStreamAsAttribute
+    private Long frommersDiningId;
+    @XStreamAsAttribute
+    private Long frommersShoppingId;
+    @XStreamAsAttribute
+    private Long frommersNightlifeId;
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -209,6 +222,54 @@ public class ItemOfInterest {
 
     public void setLinks(List<UrlLink> linksList) {
         this.links = new HashSet<UrlLink>(linksList);
+    }
+
+    public Long getWhatsonwhenId() {
+        return whatsonwhenId;
+    }
+
+    public void setWhatsonwhenId(Long whatsonwhenId) {
+        this.whatsonwhenId = whatsonwhenId;
+    }
+
+    public Long getFrommersAccommodationId() {
+        return frommersAccommodationId;
+    }
+
+    public void setFrommersAccommodationId(Long frommersAccommodationId) {
+        this.frommersAccommodationId = frommersAccommodationId;
+    }
+
+    public Long getFrommersAttractionId() {
+        return frommersAttractionId;
+    }
+
+    public void setFrommersAttractionId(Long frommersAttractionId) {
+        this.frommersAttractionId = frommersAttractionId;
+    }
+
+    public Long getFrommersDiningId() {
+        return frommersDiningId;
+    }
+
+    public void setFrommersDiningId(Long frommersDiningId) {
+        this.frommersDiningId = frommersDiningId;
+    }
+
+    public Long getFrommersShoppingId() {
+        return frommersShoppingId;
+    }
+
+    public void setFrommersShoppingId(Long frommersShoppingId) {
+        this.frommersShoppingId = frommersShoppingId;
+    }
+
+    public Long getFrommersNightlifeId() {
+        return frommersNightlifeId;
+    }
+
+    public void setFrommersNightlifeId(Long frommersNightlifeId) {
+        this.frommersNightlifeId = frommersNightlifeId;
     }
 
     public void setAudienceInterests(Set<AudienceInterest> audienceInterests) {

@@ -10,15 +10,15 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class SlideshowSearchResult implements SearchResult {
 
     @XStreamAsAttribute
-    private Long id;
+    private Long                        id;
     @XStreamAsAttribute
-    private String type;
+    private String                      type;
     @XStreamAsAttribute
-    private String name;
-
-    private String description;
+    private String                      name;
 
     private MediaImage image;
+
+    private String                      description;
 
     public Long getId() {
         return id;
@@ -39,7 +39,7 @@ public class SlideshowSearchResult implements SearchResult {
     public MediaImage getImage() {
         return image;
     }
-
+    
     public void setImage(MediaImage image) {
         this.image = image;
     }
@@ -51,5 +51,4 @@ public class SlideshowSearchResult implements SearchResult {
     public void setName(String name) {
         this.name = name;
     }
-
 }

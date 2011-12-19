@@ -18,23 +18,26 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class Slideshow {
 
     @XStreamAsAttribute
-    private Long id;
+    private Long                    id;
     @XStreamAsAttribute
-    private String name;
+    private String                  name;
     @XStreamAsAttribute
-    private String description;
+    private String                  description;
+
     @XStreamAlias("slides")
-    private List<Slide> slides;
+    private List<Slide>             slides;
     @XStreamAlias("audienceInterests")
-    private Set<AudienceInterest> audienceInterests;
+    private Set<AudienceInterest>   audienceInterests;
     @XStreamAlias("locations")
-    private Set<LocationNode> locationNodes;
+    private Set<LocationNode>       locationNodes;
     @XStreamAlias("guides")
-    private Set<GuideNode> guideNodes;
+    private Set<GuideNode>          guideNodes;
     @XStreamAlias("guideStructures")
     private Set<GuideStructureNode> guideStructureNodes;
-    @XStreamAsAttribute
-    private int slideCount;
+    @XStreamAsAttribute 
+    private int                     slideCount;
+
+    
 
     public String getName() {
         return name;
@@ -80,8 +83,7 @@ public class Slideshow {
         return guideStructureNodes;
     }
 
-    public void setGuideStructureNodes(
-            Set<GuideStructureNode> guideStructureNodes) {
+    public void setGuideStructureNodes(Set<GuideStructureNode> guideStructureNodes) {
         this.guideStructureNodes = guideStructureNodes;
     }
 
@@ -104,7 +106,7 @@ public class Slideshow {
     public int getSlideCount() {
         return slideCount;
     }
-
+    
     public void setSlideCount(int slideCount) {
         this.slideCount = slideCount;
     }

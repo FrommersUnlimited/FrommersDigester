@@ -13,12 +13,13 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class GuideNode {
 
     @XStreamAsAttribute
-    private Long id;
+    private Long         id;
     @XStreamAsAttribute
-    private String name;
-    private GuideType guideType;
+    private String       name;
+    private GuideType    guideType;
     private LocationNode location;
-    private GuideNode parent;
+    private GuideNode    parent;
+    private Book         book;
 
     public Long getId() {
         return id;
@@ -63,7 +64,7 @@ public class GuideNode {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        GuideNode other = (GuideNode) obj;
+        GuideNode other = (GuideNode)obj;
         if (id == null) {
             if (other.id != null) {
                 return false;
@@ -90,4 +91,11 @@ public class GuideNode {
         this.location = location;
     }
 
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
 }

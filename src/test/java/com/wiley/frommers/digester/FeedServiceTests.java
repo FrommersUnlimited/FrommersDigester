@@ -63,7 +63,7 @@ public class FeedServiceTests extends AbstractFeedTest {
     
     public void testGetMainSearchSimple() throws FrommersFeedException {
         MainSearchQuery query = new MainSearchQuery();
-        SearchResponse<MainSearchResult> resp = digester.mainSearch(query);
+        SearchResponse<MainSearchResult> resp = digester.searchMain(query);
         assertNotNull(resp);
         assertTrue(resp.getCurrentPage() == 1);
         assertTrue(resp.getTotalResultCount() > 0);

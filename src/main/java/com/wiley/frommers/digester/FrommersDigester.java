@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 import com.wiley.frommers.digester.domain.AudienceInterestResult;
+import com.wiley.frommers.digester.domain.CalendarResult;
 import com.wiley.frommers.digester.domain.DestinationMenu;
 import com.wiley.frommers.digester.domain.EventSearchResult;
 import com.wiley.frommers.digester.domain.GuideStructure;
@@ -14,12 +15,20 @@ import com.wiley.frommers.digester.domain.ItemOfInterest;
 import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationSearchResult;
 import com.wiley.frommers.digester.domain.MainSearchResult;
+import com.wiley.frommers.digester.domain.Media;
 import com.wiley.frommers.digester.domain.POISearchResult;
 import com.wiley.frommers.digester.domain.SearchResponse;
 import com.wiley.frommers.digester.domain.Slideshow;
 import com.wiley.frommers.digester.domain.SlideshowSearchResult;
+import com.wiley.frommers.digester.query.AudienceInterestSearchQuery;
+import com.wiley.frommers.digester.query.CalendarEventSearchQuery;
+import com.wiley.frommers.digester.query.EventSearchQuery;
+import com.wiley.frommers.digester.query.LocationSearchQuery;
 import com.wiley.frommers.digester.query.MainSearchQuery;
+import com.wiley.frommers.digester.query.POISearchQuery;
 import com.wiley.frommers.digester.query.Query;
+import com.wiley.frommers.digester.query.QueryParams;
+import com.wiley.frommers.digester.query.SlideshowSearchQuery;
 
 /**
  * Implementation of FeedService interface.
@@ -150,24 +159,86 @@ public class FrommersDigester {
     // --------------------------------------------------------
     
     public Slideshow getSlideshowById(Long slideshowId) throws FrommersFeedException {
-        return (Slideshow) getById(Feed.SLIDESHOW.getCode(), Feed.SLIDESHOW.getIdName(), 
+        return (Slideshow) getById(
+                Feed.SLIDESHOW.getCode(), 
+                QueryParams.SLIDESHOW_ID.getName(), 
                 slideshowId);
     }
+    
+    public Media getMediaById(Long mediaId) throws FrommersFeedException {
+        return (Media) getById(
+                Feed.MEDIA.getCode(), 
+                QueryParams.MEDIA_ID.getName(), 
+                mediaId);
+    }
+    
     public Location getLocationById(Long locationId) throws FrommersFeedException {
-        return (Location) getById(Feed.LOCATION.getCode(), Feed.LOCATION.getIdName(), 
+        return (Location) getById(
+                Feed.LOCATION.getCode(), 
+                QueryParams.LOCATION_ID.getName(), 
                 locationId);
     }
 
     public GuideStructure getGuideStructureById(Long guideStructureId)
             throws FrommersFeedException {
-        return (GuideStructure) getById(Feed.GUIDE_STRUCTURE.getCode(), Feed.GUIDE_STRUCTURE.getIdName(), 
+        return (GuideStructure) getById(
+                Feed.GUIDE_STRUCTURE.getCode(), 
+                QueryParams.GUIDE_STRUCTURE_ID.getName(), 
                 guideStructureId);
     }
-
+    
+    public GuideStructure getGuideStructureByGuideStructureTypeIdAndLocationId(
+            Long guideStructureTypeId, Long locationId)
+            throws FrommersFeedException {
+        FeedUrlBuilder urlBuilder = new FeedUrlBuilder(rootUrl,
+                Feed.GUIDE_STRUCTURE.getCode());
+        urlBuilder.addParameter(QueryParams.GUIDE_STRUCTURE_TYPE_ID.getName(),
+                String.valueOf(guideStructureTypeId));
+        urlBuilder.addParameter(QueryParams.LOCATION_ID.getName(),
+                String.valueOf(locationId));
+        return (GuideStructure) getFeedResponse(urlBuilder.toString());
+    }
+    
     public ItemOfInterest getItemOfInterestById(Long itemOfInterestId)
             throws FrommersFeedException {
-        return (ItemOfInterest) getById(Feed.ITEM_OF_INTEREST.getCode(), Feed.ITEM_OF_INTEREST.getIdName(), 
+        return (ItemOfInterest) getById(
+                Feed.ITEM_OF_INTEREST.getCode(), 
+                QueryParams.ITEM_OF_INTEREST_ID.getName(), 
                 itemOfInterestId);
+    }
+    
+    // --------------------------------------------------------
+    // destination menu methods
+    // --------------------------------------------------------
+    
+    public DestinationMenu getDestinationMenuByLocationId(Long locationId, boolean autoHide)
+            throws FrommersFeedException {
+        return getDestinationMenu(QueryParams.LOCATION_ID.getName(), locationId, autoHide);
+    }
+    
+    public DestinationMenu getDestinationMenuByGuideStructureId(Long guideStructureId, boolean autoHide)
+            throws FrommersFeedException {
+        return getDestinationMenu(QueryParams.GUIDE_STRUCTURE_ID.getName(), guideStructureId, autoHide);
+    }
+    
+    public DestinationMenu getDestinationMenuByGuideId(Long guideId, boolean autoHide)
+            throws FrommersFeedException {
+        return getDestinationMenu(QueryParams.GUIDE_ID.getName(), guideId, autoHide);
+    }
+    
+    public DestinationMenu getDestinationMenuByItemOfInterestId(Long itemOfInterestId, boolean autoHide)
+            throws FrommersFeedException {
+        return getDestinationMenu(QueryParams.ITEM_OF_INTEREST_ID.getName(), itemOfInterestId, autoHide);
+    }
+    
+    private DestinationMenu getDestinationMenu(String idName, Long idVal,
+            boolean autoHide) throws FrommersFeedException {
+        FeedUrlBuilder urlBuilder = new FeedUrlBuilder(rootUrl,
+                Feed.DESTINATION_MENU.getCode());
+        urlBuilder.addParameter(QueryParams.AUTO_HIDE.getName(),
+                String.valueOf(autoHide));
+        urlBuilder.addParameter(idName, String.valueOf(idVal));
+        return (DestinationMenu) getFeedResponse(urlBuilder.toString());
     }
     
     // --------------------------------------------------------
@@ -175,243 +246,52 @@ public class FrommersDigester {
     // --------------------------------------------------------
     
     @SuppressWarnings("unchecked")
-    public SearchResponse<MainSearchResult> mainSearch(MainSearchQuery query)
+    public SearchResponse<MainSearchResult> searchMain(MainSearchQuery query)
             throws FrommersFeedException {
         return (SearchResponse<MainSearchResult>) getByQuery(
                 Feed.MAIN_SEARCH.getCode(), query);
     }
-
-    /*
-    @Override
-    public DestinationMenu getDestinationMenuByLocationId(Long locationId)
-            throws SispException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
+    
+    @SuppressWarnings("unchecked")
     public SearchResponse<EventSearchResult> searchEvents(EventSearchQuery query)
-            throws SispException {
-        // TODO Auto-generated method stub
-        return null;
+            throws FrommersFeedException {
+        return (SearchResponse<EventSearchResult>) getByQuery(
+                Feed.EVENT_SEARCH.getCode(), query);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public SearchResponse<POISearchResult> searchPOIs(POISearchQuery query)
+            throws FrommersFeedException {
+        return (SearchResponse<POISearchResult>) getByQuery(
+                Feed.POI_SEARCH.getCode(), query);
     }
 
-    @Override
-    public SearchResponse<MainSearchResult> searchMains(EventSearchQuery query)
-            throws SispException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public SearchResponse<POISearchResult> searchPois(PoiSearchQuery query)
-            throws SispException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     public SearchResponse<AudienceInterestResult> searchAudienceInterests(
-            AudienceInterestQuery query) throws SispException {
-        // TODO Auto-generated method stub
-        return null;
+            AudienceInterestSearchQuery query) throws FrommersFeedException {
+        return (SearchResponse<AudienceInterestResult>) getByQuery(
+                Feed.AUDIENCE_INTEREST_SEARCH.getCode(), query);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
     public SearchResponse<LocationSearchResult> searchLocations(
-            LocationSearchQuery query) throws SispException {
-        // TODO Auto-generated method stub
-        return null;
+            LocationSearchQuery query) throws FrommersFeedException {
+        return (SearchResponse<LocationSearchResult>) getByQuery(
+                Feed.LOCATION_SEARCH.getCode(), query);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
     public SearchResponse<SlideshowSearchResult> searchSlideshows(
-            SlideShowSearchQuery query) throws SispException {
-        // TODO Auto-generated method stub
-        return null;
+            SlideshowSearchQuery query) throws FrommersFeedException {
+        return (SearchResponse<SlideshowSearchResult>) getByQuery(
+                Feed.SLIDESHOW_SEARCH.getCode(), query);
     }
     
-    
-    
-    
-    /*
-
-    public DestinationMenu getDestinationMenuByQuery(DestinationMenuQuery query)
-            throws SispException {
-
-        DestinationMenu result = null;
-
-        if (cacheActive) {
-            result = MAP_CACHE.get(query.getId());
-            if (result != null) {
-                LOGGER.info("getDestinationMenuByQuery from sisp cache");
-                return result;
-            }
-        }
-
-        result = executeQuery(DESTINATION_MENU_FEED, query);
-
-        if (cacheActive && result != null)
-            MAP_CACHE.put(query.getId(), result);
-
-        return result;
+    @SuppressWarnings("unchecked")
+    public SearchResponse<CalendarResult> searchCalendarEvents(CalendarEventSearchQuery query)
+            throws FrommersFeedException {
+        return (SearchResponse<CalendarResult>) getByQuery(
+                Feed.CALENDAR_EVENT_SEARCH.getCode(), query);
     }
-
-    public ItemOfInterest getItemOfInterestById(Long id) throws SispException {
-
-        ItemOfInterest result = null;
-        if (cacheActive) {
-            result = MAP_CACHE.get(id.toString());
-            if (result != null) {
-                LOGGER.info("getItemOfInterestById from sisp cache");
-                return result;
-            }
-        }
-
-        final String feedUrl = rootUrl + ITEM_OF_INTEREST_FEED
-                + "?itemOfInterestId=" + id;
-
-        final InputStream stream = getHttpInputStream(feedUrl);
-
-        result = (ItemOfInterest) marshaller.getXStream().fromXML(stream);
-        if (cacheActive && result != null)
-            MAP_CACHE.put(result.getId().toString(), result);
-        LOGGER.info("getItemOfInterestById from network");
-
-        return result;
-    }
-
-    public SearchResponse<LocationSearchResult> searchLocations(
-            LocationSearchQuery query) throws SispException {
-
-        final SearchResponse<LocationSearchResult> result = executeQuery(
-                LOCATION_SEARCH_FEED, query);
-
-        return result;
-
-    }
-
-    public GuideStructure getGuideStructureByQuery(GuideQuery query)
-            throws SispException {
-
-        GuideStructure result = null;
-
-        if (cacheActive) {
-            result = MAP_CACHE.get(query.getId());
-            if (result != null) {
-                LOGGER.info("getGuideStructureByQuery from sisp cache");
-                return result;
-            }
-        }
-
-        result = executeQuery(GUIDE_STRUCTURE_FEED, query);
-
-        if (cacheActive && result != null)
-            MAP_CACHE.put(result.getId().toString(), result);
-        LOGGER.info("getGuideStructureByQuery from http");
-
-        return result;
-    }
-
-    public SearchResponse<POISearchResult> searchPois(PoiSearchQuery query)
-            throws SispException {
-
-        final SearchResponse<POISearchResult> result = executeQuery(
-                POI_SEARCH_FEED, query);
-
-        return result;
-    }
-
-    public Location getLocationById(Long id) throws SispException {
-        final String feedUrl = rootUrl + LOCATION_FEED + "?locationId=" + id;
-        Location result = null;
-
-        if (cacheActive) {
-            result = MAP_CACHE.get(id.toString());
-            if (result != null)
-                return result;
-
-        }
-
-        final InputStream stream = getHttpInputStream(feedUrl);
-
-        result = (Location) marshaller.getXStream().fromXML(stream);
-
-        if (cacheActive && result != null)
-            MAP_CACHE.put(result.getId().toString(), result);
-
-        LOGGER.info("getLocationById from http");
-
-        return result;
-    }
-
-    public void setCacheActive(boolean useCache) {
-        this.cacheActive = useCache;
-    }
-
-    public SearchResponse<SlideshowSearchResult> searchSildeshows(
-            SlideShowSearchQuery query) throws SispException {
-        final SearchResponse<SlideshowSearchResult> slidesResult = executeQuery(
-                SLIDE_SHOW_SEARCH_FEED, query);
-
-        LOGGER.debug("getSildesShowByQuery() SlideshowSearchResult found = "
-                + "(" + slidesResult.getTotalResultCount() + ")");
-
-        return slidesResult;
-    }
-
-    public Slideshow getSildeshowById(Long id) throws SispException {
-
-        Slideshow result = null;
-
-        if (cacheActive) {
-
-            result = MAP_CACHE.get(id.toString());
-            if (result != null)
-                return result;
-
-        }
-
-        String feedUrl = rootUrl + SLIDE_SHOW_FEED + "?slideshowId=" + id;
-
-        final InputStream stream = getHttpInputStream(feedUrl);
-
-        result = (Slideshow) marshaller.getXStream().fromXML(stream);
-
-        if (cacheActive && result != null)
-            MAP_CACHE.put(id.toString(), result);
-
-        LOGGER.debug("getSildesShowById() slideshow found = " + "("
-                + result.getSlideCount() + ")");
-
-        return result;
-    }
-    
-    public SearchResponse<EventSearchResult> searchEvents(EventSearchQuery query)
-            throws SispException {
-        // TODO see if we cache the search results
-        final SearchResponse<EventSearchResult> result = executeQuery(
-                EVENT_SEARCH_FEED, query);
-
-        return result;
-    }
-
-    public SearchResponse<MainSearchResult> searchMains(EventSearchQuery query)
-            throws SispException {
-        final SearchResponse<MainSearchResult> result = executeQuery(
-                EVENT_SEARCH_FEED, query);
-
-        return result;
-    }
-
-    public SearchResponse<AudienceInterestResult> searchAudienceInterests(
-            AudienceInterestQuery query) throws SispException {
-
-        final SearchResponse<AudienceInterestResult> result = executeQuery(
-                AUDIENCE_INTEREST_SEARCH_FEED, query);
-
-        return result;
-
-    }*/
 
 }

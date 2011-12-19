@@ -72,6 +72,7 @@ public class MainSearchResult implements SearchResult {
         this.subTypeName = subTypeName;
     }
 
+    @Override
     public Long getId() {
         return id;
     }

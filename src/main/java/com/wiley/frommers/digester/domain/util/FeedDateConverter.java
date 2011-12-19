@@ -1,7 +1,7 @@
 /*
  * &copy; John Wiley &amp; Sons, Inc
  */
-package com.wiley.frommers.digester.domain;
+package com.wiley.frommers.digester.domain.util;
 
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 

@@ -8,6 +8,7 @@ import java.util.Date;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.wiley.frommers.digester.domain.util.FeedDateConverter;
 
 /**
  * A range with a start and end date that defines occurance of something
