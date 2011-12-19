@@ -5,6 +5,7 @@ package com.wiley.frommers.digester;
 
 import org.apache.log4j.Logger;
 
+import com.wiley.frommers.digester.config.FrommersDigesterConfig;
 import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationNode;
 import com.wiley.frommers.digester.domain.MainSearchResult;
@@ -28,7 +29,10 @@ public class FeedServiceTests extends AbstractFeedTest {
     private static Long PARIS_ID = (long) 151160;
 
     public void setUp() {
-    	digester = FrommersDigester.getInstance(ROOT_URL, CACHE_ACTIVE);
+        FrommersDigesterConfig config = new FrommersDigesterConfig();
+        config.setRootUrl(ROOT_URL);
+        config.setCacheActive(CACHE_ACTIVE);
+    	digester = FrommersDigesterFactory.getInstance(config, FrommersDigesterUnmarshaller.XSTREAM);
     }
     
     public void testGetLocationById() throws FrommersFeedException {
