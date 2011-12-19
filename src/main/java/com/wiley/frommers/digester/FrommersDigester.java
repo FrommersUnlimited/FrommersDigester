@@ -1,6 +1,5 @@
 package com.wiley.frommers.digester;
 
-import com.wiley.frommers.digester.config.FrommersDigesterConfig;
 import com.wiley.frommers.digester.domain.AudienceInterestResult;
 import com.wiley.frommers.digester.domain.CalendarResult;
 import com.wiley.frommers.digester.domain.DestinationMenu;
