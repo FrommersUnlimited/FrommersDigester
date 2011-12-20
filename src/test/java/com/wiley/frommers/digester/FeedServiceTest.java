@@ -15,11 +15,11 @@ import com.wiley.frommers.digester.query.MainSearchQuery;
 /**
  * Tests for digester
  */
-public class FeedServiceTests extends AbstractFeedTest {
+public class FeedServiceTest extends AbstractFeedTest {
     /**
      * Logger for this class
      */
-    private static final Logger LOGGER = Logger.getLogger(FeedServiceTests.class);
+    private static final Logger LOGGER = Logger.getLogger(FeedServiceTest.class);
 
     /** The destination service. */
     private FrommersDigester digester;
