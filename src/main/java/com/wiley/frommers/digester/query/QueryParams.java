@@ -25,6 +25,7 @@ public enum QueryParams {
     GUIDE_STRUCTURE_ID("guideStructureId"),
     GUIDE_STRUCTURE_TYPE_ID("guideStructureTypeId"),
     GUIDE_ID("guideId"),
+    IS_GUIDE("isGuide"),
     ITEM_OF_INTEREST_ID("itemOfInterestId"),
     MEDIA_ID("mediaId"),
     HAS_GUIDE("hasGuide"),

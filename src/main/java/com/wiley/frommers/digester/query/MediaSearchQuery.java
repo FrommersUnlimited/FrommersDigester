@@ -7,9 +7,13 @@ package com.wiley.frommers.digester.query;
  *      href="http://support.frommers.biz/api-reference/#media_search">API</a>
  */
 public class MediaSearchQuery extends AbstractSearchQuery {
-    
+
     public void setType(String type) {
         addParameter(QueryParams.TYPE.getName(), type);
+    }
+
+    public void setIsGuide(Boolean isGuide) {
+        addParameter(QueryParams.IS_GUIDE.getName(), String.valueOf(isGuide));
     }
 
     public void addAudienceInterestId(Long audienceInterestId) {
@@ -21,15 +25,14 @@ public class MediaSearchQuery extends AbstractSearchQuery {
         addParameter(QueryParams.LOCATION_ID.getName(),
                 String.valueOf(locationId));
     }
-    
+
     public void addGuideStructureId(Long guideStructureId) {
         addParameter(QueryParams.GUIDE_STRUCTURE_ID.getName(),
                 String.valueOf(guideStructureId));
     }
-    
+
     public void addGuideId(Long guideId) {
-        addParameter(QueryParams.GUIDE_ID.getName(),
-                String.valueOf(guideId));
+        addParameter(QueryParams.GUIDE_ID.getName(), String.valueOf(guideId));
     }
 
 }

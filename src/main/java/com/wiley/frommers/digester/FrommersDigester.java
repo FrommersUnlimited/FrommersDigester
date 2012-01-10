@@ -10,6 +10,7 @@ import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationSearchResult;
 import com.wiley.frommers.digester.domain.MainSearchResult;
 import com.wiley.frommers.digester.domain.Media;
+import com.wiley.frommers.digester.domain.MediaSearchResult;
 import com.wiley.frommers.digester.domain.POISearchResult;
 import com.wiley.frommers.digester.domain.SearchResponse;
 import com.wiley.frommers.digester.domain.Slideshow;
@@ -19,6 +20,7 @@ import com.wiley.frommers.digester.query.CalendarEventSearchQuery;
 import com.wiley.frommers.digester.query.EventSearchQuery;
 import com.wiley.frommers.digester.query.LocationSearchQuery;
 import com.wiley.frommers.digester.query.MainSearchQuery;
+import com.wiley.frommers.digester.query.MediaSearchQuery;
 import com.wiley.frommers.digester.query.POISearchQuery;
 import com.wiley.frommers.digester.query.SlideshowSearchQuery;
 
@@ -26,7 +28,7 @@ import com.wiley.frommers.digester.query.SlideshowSearchQuery;
  * Main interface which provides access to the Frommers API methods.
  */
 public interface FrommersDigester {
-    
+
     public abstract FrommersDigesterConfig getConfig();
 
     public abstract Slideshow getSlideshowById(Long slideshowId)
@@ -82,5 +84,8 @@ public interface FrommersDigester {
 
     public abstract SearchResponse<CalendarResult> searchCalendarEvents(
             CalendarEventSearchQuery query) throws FrommersFeedException;
+
+    public abstract SearchResponse<MediaSearchResult> searchMedia(
+            MediaSearchQuery query) throws FrommersFeedException;
 
 }

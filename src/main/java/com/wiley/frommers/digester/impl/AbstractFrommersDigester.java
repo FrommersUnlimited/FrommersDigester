@@ -20,6 +20,7 @@ import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationSearchResult;
 import com.wiley.frommers.digester.domain.MainSearchResult;
 import com.wiley.frommers.digester.domain.Media;
+import com.wiley.frommers.digester.domain.MediaSearchResult;
 import com.wiley.frommers.digester.domain.POISearchResult;
 import com.wiley.frommers.digester.domain.SearchResponse;
 import com.wiley.frommers.digester.domain.Slideshow;
@@ -29,6 +30,7 @@ import com.wiley.frommers.digester.query.CalendarEventSearchQuery;
 import com.wiley.frommers.digester.query.EventSearchQuery;
 import com.wiley.frommers.digester.query.LocationSearchQuery;
 import com.wiley.frommers.digester.query.MainSearchQuery;
+import com.wiley.frommers.digester.query.MediaSearchQuery;
 import com.wiley.frommers.digester.query.POISearchQuery;
 import com.wiley.frommers.digester.query.Query;
 import com.wiley.frommers.digester.query.QueryParams;
@@ -312,6 +314,18 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
             throws FrommersFeedException {
         return (SearchResponse<CalendarResult>) getByQuery(
                 Feed.CALENDAR_EVENT_SEARCH.getCode(), query);
+    }
+    
+    
+    /* (non-Javadoc)
+     * @see com.wiley.frommers.digester.FrommersDigester#searchMedia(com.wiley.frommers.digester.query.MediaSearchQuery)
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public SearchResponse<MediaSearchResult> searchMedia(MediaSearchQuery query)
+            throws FrommersFeedException {
+        return (SearchResponse<MediaSearchResult>) getByQuery(
+                Feed.MEDIA_SEARCH.getCode(), query);
     }
 
     public FrommersDigesterConfig getConfig() {

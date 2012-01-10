@@ -6,11 +6,12 @@ import java.util.Date;
 /**
  * Class encapsulating a query for the event_search feed.
  * 
- * @see <a href="http://support.frommers.biz/api-reference/#event_search">API</a>
+ * @see <a
+ *      href="http://support.frommers.biz/api-reference/#event_search">API</a>
  */
 public class EventSearchQuery extends ItemOfInterestSearchQuery {
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("YYYYMMDD");
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd");
 
     public void setStartDate(Date startDate) {
         addParameter(QueryParams.START_DATE.getName(), SDF.format(startDate));
