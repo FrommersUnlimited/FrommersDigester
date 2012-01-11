@@ -21,6 +21,14 @@ public class FeedUrlBuilder {
         url.paramMap.put(idName, String.valueOf(idVal));
         return url.toString();
     }
+    
+    public static final String generateKey(String feedCode,
+            String idName, Long idVal) {
+        StringBuilder sb = new StringBuilder(feedCode);
+        sb.append(":").append(idName).append(":").append(idVal);
+        
+        return sb.toString();
+    }
 
     public static final String createUrl(String urlRoot, String feedCode,
             Query query) {

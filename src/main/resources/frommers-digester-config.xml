@@ -2,4 +2,8 @@
 <config>
 	<rootUrl>http://demosite.frommers.biz/frommers</rootUrl>
 	<cacheActive>true</cacheActive>
+<!-- 	Maximum number of object stored in the cache -->
+	<cacheSize>1000</cacheSize>
+<!-- 	Number of milliseconds before a given element expires  ex : 1 hour-->
+	<cacheMaxAge>3600000</cacheMaxAge>
 </config>
