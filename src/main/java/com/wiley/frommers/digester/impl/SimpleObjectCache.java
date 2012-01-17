@@ -67,7 +67,7 @@ public class SimpleObjectCache {
 
     private int maxSize;
     private long expireAfterMS;
-    private HashMap map;
+    private HashMap<String, Object> map;
 
     /**
      * Create new SimpleObjectCache.
@@ -80,7 +80,7 @@ public class SimpleObjectCache {
     public SimpleObjectCache(int maxSize, long expireAfterMS) {
         this.maxSize = maxSize;
         this.expireAfterMS = expireAfterMS;
-        this.map = new HashMap(maxSize, 1);
+        this.map = new HashMap<String, Object>(maxSize, 1);
     }
 
     /**
@@ -149,7 +149,7 @@ public class SimpleObjectCache {
      * 
      * @see java.util.HashMap#keySet()
      */
-    public Set keySet() {
+    public Set<String> keySet() {
         return Collections.unmodifiableSet(Collections.synchronizedSet(map
                 .keySet()));
     }
@@ -160,7 +160,7 @@ public class SimpleObjectCache {
      * 
      * @see java.util.HashMap#put(java.lang.Object, java.lang.Object)
      */
-    public synchronized Object put(Object key, Object value) {
+    public synchronized Object put(String key, Object value) {
         SimpleObjectCacheValue socValue = (SimpleObjectCacheValue) map.get(key);
         Object result = null;
         if (socValue != null) {
@@ -181,9 +181,9 @@ public class SimpleObjectCache {
      * 
      * @see java.util.HashMap#putAll(java.util.Map)
      */
-    public synchronized void putAll(Map t) {
-        for (Iterator it = t.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+    public synchronized void putAll(Map<String, Object> t) {
+        for (Iterator<Map.Entry<String, Object>> it = t.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, Object> entry = it.next();
             this.put(entry.getKey(), entry.getValue());
         }
     }
@@ -203,7 +203,7 @@ public class SimpleObjectCache {
     public synchronized Object removeLRU() {
         Object lruKey = null;
         long lruTimestamp = Long.MAX_VALUE;
-        for (Iterator it = map.keySet().iterator(); it.hasNext();) {
+        for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
             Object key = it.next();
             SimpleObjectCacheValue socValue = (SimpleObjectCacheValue) map
                     .get(key);
@@ -234,16 +234,16 @@ public class SimpleObjectCache {
         message.append("SimpleObjectCache: size=").append(map.size());
 
         // Sort the map entries by getCount
-        SortedSet sortedSet = new TreeSet(
+        SortedSet<Map.Entry<String, Object>> sortedSet = new TreeSet<Map.Entry<String, Object>>(
                 new SimpleObjectCacheEntryGetCountComparator());
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+        for (Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, Object> entry = it.next();
             sortedSet.add(entry);
         }
 
         // walk through the sorted set
-        for (Iterator it = sortedSet.iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+        for (Iterator<Map.Entry<String, Object>> it = sortedSet.iterator(); it.hasNext();) {
+            Map.Entry<String, Object> entry = it.next();
             Object key = entry.getKey();
             SimpleObjectCacheValue socValue = (SimpleObjectCacheValue) entry
                     .getValue();
@@ -263,11 +263,9 @@ public class SimpleObjectCache {
      * Comparator: first by "getCount" (reverse), then by key (reverse)
      */
     private class SimpleObjectCacheEntryGetCountComparator implements
-            Comparator {
+            Comparator<Map.Entry<String, Object>> {
 
-        public int compare(Object o0, Object o1) {
-            Map.Entry t0 = (Map.Entry) o0;
-            Map.Entry t1 = (Map.Entry) o1;
+        public int compare(Map.Entry<String, Object> t0, Map.Entry<String, Object> t1) {
             SimpleObjectCacheValue v0 = (SimpleObjectCacheValue) (t0.getValue());
             SimpleObjectCacheValue v1 = (SimpleObjectCacheValue) (t1.getValue());
             Long getCount0 = new Long(v0.getGetCount());

@@ -57,7 +57,7 @@
 		</plugins>
 	</build>
 
-	<description>Java/Spring based digester of Frommers Feeds.</description>
+	<description>Java based implementation of Frommers Feeds.</description>
 	<organization>
 		<name>Frommers Unlimited</name>
 		<url>http://www.frommers.biz</url>
