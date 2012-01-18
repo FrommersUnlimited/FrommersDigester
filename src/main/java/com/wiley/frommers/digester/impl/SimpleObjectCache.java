@@ -61,7 +61,6 @@ import java.util.TreeSet;
  * </pre>
  * 
  * @author nuglov, created Jan 2, 2004 at 3:28:19 PM
- * @version $Id: SimpleObjectCache.java,v 1.1 2004/09/20 15:26:49 gkreftin Exp $
  */
 public class SimpleObjectCache {
 

@@ -51,8 +51,9 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
     public AbstractFrommersDigester(FrommersDigesterConfig config) {
         this.config = config;
         this.rootUrl = config.getRootUrl();
+        
         if (config.isCacheActive()){
-            cache=new SimpleObjectCache(config.getCacheSize(), config.getCacheMaxAge());
+            cache = new SimpleObjectCache(config.getCacheSize(), config.getCacheMaxAge());
         }
     }
 
@@ -69,7 +70,7 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
     private <T> T getById(String feedCode, String idName, Long idVal)
             throws FrommersFeedException {
             
-        if (config.isCacheActive()){
+        if (config.isCacheActive()) {
             // generate a unique code by object type and feed
             final String key = FeedUrlBuilder.generateKey(feedCode, idName, idVal);
             Object result = cache.get(key);
@@ -78,11 +79,9 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
                         idName, idVal));
                 cache.put(key, result);             
             }
-            
             return (T) result;   
             
-        }else {
-            
+        } else {
             return (T) getFeedResponse(FeedUrlBuilder.createUrl(rootUrl, feedCode,
                 idName, idVal));
         }
@@ -112,11 +111,6 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
      * @throws FrommersFeedException
      */
     private <T> T getFeedResponse(String urlStr) throws FrommersFeedException {
-
-        // TODO: Implement URL based caching. Different cache configurations for
-        // different
-        // feed types (configurable)
-
         URL url;
         try {
             url = new URL(urlStr);
@@ -127,9 +121,6 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
 
         LOGGER.trace("executeFeedRequest: " + urlStr);
         T result = executeFeedRequest(url);
-
-        // TODO: Add to cache
-
         return result;
     }
 
