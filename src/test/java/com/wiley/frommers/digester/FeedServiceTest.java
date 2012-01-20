@@ -28,10 +28,8 @@ public class FeedServiceTest extends AbstractFeedTest {
     private static Long PARIS_ID = (long) 151160;
 
     public void setUp() throws FrommersFeedException {
-        digester = FrommersDigesterFactory.getInstance(
-                FrommersDigesterUnmarshaller.XSTREAM,
-                "classpath:frommers-digester-config.xml", this.getClass()
-                        .getClassLoader());
+        digester = FrommersDigesterFactory.getInstance(FrommersDigesterUnmarshaller.XSTREAM,
+                "classpath:frommers-digester-config.xml");
     }
 
     public void testGetLocationById() throws FrommersFeedException {

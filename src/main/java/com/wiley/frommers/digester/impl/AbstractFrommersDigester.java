@@ -3,8 +3,6 @@ package com.wiley.frommers.digester.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
-
 import com.wiley.frommers.digester.Feed;
 import com.wiley.frommers.digester.FeedUrlBuilder;
 import com.wiley.frommers.digester.FrommersDigester;
@@ -40,9 +38,6 @@ import com.wiley.frommers.digester.query.SlideshowSearchQuery;
  * Implementation of FeedService interface.
  */
 public abstract class AbstractFrommersDigester implements FrommersDigester {
-
-    protected static final Logger LOGGER = Logger
-            .getLogger(AbstractFrommersDigester.class);
 
     private FrommersDigesterConfig config;
     private String rootUrl;
@@ -119,7 +114,6 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
                     + urlStr);
         }
 
-        LOGGER.trace("executeFeedRequest: " + urlStr);
         T result = executeFeedRequest(url);
         return result;
     }

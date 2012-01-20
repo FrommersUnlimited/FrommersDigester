@@ -6,8 +6,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import org.apache.log4j.Logger;
-
 import com.thoughtworks.xstream.XStream;
 import com.wiley.frommers.digester.impl.xstream.XStreamFrommersDigester;
 import com.wiley.frommers.digester.impl.xstream.XStreamFrommersDigesterConfig;
@@ -18,7 +16,6 @@ import com.wiley.frommers.digester.impl.xstream.XStreamManager;
  */
 public class FrommersDigesterFactory {
     
-    protected static final Logger LOGGER = Logger.getLogger(FrommersDigesterFactory.class);
     protected static final ClasspathURLStreamHandler defaultHandler = new ClasspathURLStreamHandler();
     
     private static FrommersDigester instance;
@@ -66,7 +63,8 @@ public class FrommersDigesterFactory {
                 case XSTREAM:
                     XStream xstream = XStreamManager.getInstance();
                     URL configUrl = new URL(null, configLocation, handler);
-                    FrommersDigesterConfig config = (XStreamFrommersDigesterConfig) 
+
+                    FrommersDigesterConfig config = (XStreamFrommersDigesterConfig)
                             xstream.fromXML(configUrl);
                     
                     // Check if there isn't an instance already configured
