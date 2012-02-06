@@ -75,7 +75,6 @@ public class FeedServiceTest extends AbstractFeedTest {
     
     public void testGetImagesForQueryRome() throws FrommersFeedException {
         MediaSearchQuery query = new MediaSearchQuery();
-        
         query.setQuery("rome");
         LOGGER.log(Level.FINE, "Checking for photos matching query 'rome'");
         
@@ -95,7 +94,8 @@ public class FeedServiceTest extends AbstractFeedTest {
     	// Construct a 'global' event search
     	EventSearchQuery query = new EventSearchQuery();
     	query.setShowMax(true);
-    	
+        LOGGER.log(Level.FINE, "Searching for all event with showMax=true");
+
     	SearchResponse<EventSearchResult> resp = digester.searchEvents(query);
         assertNotNull(resp);        
         assertTrue(resp.getCurrentPage() == 1);
