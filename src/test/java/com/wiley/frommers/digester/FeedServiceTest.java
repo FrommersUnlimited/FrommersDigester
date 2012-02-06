@@ -92,7 +92,7 @@ public class FeedServiceTest extends AbstractFeedTest {
     }
     
     public void testEventSearchShowMaxReturnsMoreThanFiftyResults() throws FrommersFeedException{
-    	// Construct a 'global; event search
+    	// Construct a 'global' event search
     	EventSearchQuery query = new EventSearchQuery();
     	query.setShowMax(true);
     	
@@ -103,7 +103,7 @@ public class FeedServiceTest extends AbstractFeedTest {
         // Ensure we have more than the standard 50 results
         assertTrue(resp.getTotalResultCount() > 50);
         
-        // For large result sets the pagination max is 1000
+        // For large result sets, the currentPageResultCount has a hard limit of 1000
         assertEquals(1000, resp.getCurrentPageResultCount());
     }
 
