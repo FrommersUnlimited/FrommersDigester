@@ -1,6 +1,3 @@
-/*
- * &copy; John Wiley &amp; Sons, Inc
- */
 package com.wiley.frommers.digester;
 
 import java.util.logging.Level;
@@ -17,14 +14,14 @@ import com.wiley.frommers.digester.query.MainSearchQuery;
 import com.wiley.frommers.digester.query.MediaSearchQuery;
 
 /**
- * Tests for digester
+ * Tests for the FrommersDigester
  */
-public class FeedServiceTest extends AbstractFeedTest {
+public class FrommersDigesterTest extends AbstractDigesterTest {
     /**
      * Logger for this class
      */
     private static final Logger LOGGER = Logger.getLogger(
-    		FeedServiceTest.class.getName());
+    		FrommersDigesterTest.class.getName());
 
     /** The destination service. */
     private FrommersDigester digester;
