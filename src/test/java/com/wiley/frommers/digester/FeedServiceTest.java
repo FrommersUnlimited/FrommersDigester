@@ -3,15 +3,16 @@
  */
 package com.wiley.frommers.digester;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-
+import com.wiley.frommers.digester.domain.EventSearchResult;
 import com.wiley.frommers.digester.domain.Location;
 import com.wiley.frommers.digester.domain.LocationNode;
 import com.wiley.frommers.digester.domain.MainSearchResult;
 import com.wiley.frommers.digester.domain.MediaSearchResult;
 import com.wiley.frommers.digester.domain.SearchResponse;
+import com.wiley.frommers.digester.query.EventSearchQuery;
 import com.wiley.frommers.digester.query.MainSearchQuery;
 import com.wiley.frommers.digester.query.MediaSearchQuery;
 
@@ -76,7 +77,7 @@ public class FeedServiceTest extends AbstractFeedTest {
         MediaSearchQuery query = new MediaSearchQuery();
         
         query.setQuery("rome");
-        LOGGER.log(Level.INFO, "Checking for photos matching query 'rome'");
+        LOGGER.log(Level.FINE, "Checking for photos matching query 'rome'");
         
         SearchResponse<MediaSearchResult> resp = digester.searchMedia(query);
         assertNotNull(resp);        
@@ -88,6 +89,22 @@ public class FeedServiceTest extends AbstractFeedTest {
         	assertNull(media.getThumbnailUrl());
         }
     	
+    }
+    
+    public void testEventSearchShowMaxReturnsMoreThanFiftyResults() throws FrommersFeedException{
+    	// Construct a 'global; event search
+    	EventSearchQuery query = new EventSearchQuery();
+    	query.setShowMax(true);
+    	
+    	SearchResponse<EventSearchResult> resp = digester.searchEvents(query);
+        assertNotNull(resp);        
+        assertTrue(resp.getCurrentPage() == 1);
+        
+        // Ensure we have more than the standard 50 results
+        assertTrue(resp.getTotalResultCount() > 50);
+        
+        // For large result sets the pagination max is 1000
+        assertEquals(1000, resp.getCurrentPageResultCount());
     }
 
 }

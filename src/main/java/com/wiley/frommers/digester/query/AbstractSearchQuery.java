@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implementation of Query. Allows subclassing for particular search feed
+ * Implementation of Query. Allows sub-classing for particular search feed
  * queries.
  */
 public abstract class AbstractSearchQuery implements Query {
@@ -28,6 +28,10 @@ public abstract class AbstractSearchQuery implements Query {
         addParameter(QueryParams.N_PER_PAGE.getName(), String.valueOf(nPerPage));
     }
 
+    public void setShowMax(boolean showMax) {
+        addParameter(QueryParams.SHOW_MAX.getName(), String.valueOf(showMax));
+    }
+    
     public void setQuery(String query) {
         addParameter(QueryParams.QUERY.getName(), query);
     }

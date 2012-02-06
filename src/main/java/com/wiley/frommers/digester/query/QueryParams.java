@@ -21,6 +21,7 @@ public enum QueryParams {
     MILES("miles"),
     SUB_TYPE("type"),
     SHOW_DEPTH("showDepth"),
+    SHOW_MAX("showMax"),
     AUDIENCE_INTEREST_ID("audienceInterestId"),
     GUIDE_STRUCTURE_ID("guideStructureId"),
     GUIDE_STRUCTURE_TYPE_ID("guideStructureTypeId"),
