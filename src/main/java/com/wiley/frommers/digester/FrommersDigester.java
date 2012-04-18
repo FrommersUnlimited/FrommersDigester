@@ -18,6 +18,7 @@ import com.wiley.frommers.digester.domain.SlideshowSearchResult;
 import com.wiley.frommers.digester.query.AudienceInterestSearchQuery;
 import com.wiley.frommers.digester.query.CalendarEventSearchQuery;
 import com.wiley.frommers.digester.query.EventSearchQuery;
+import com.wiley.frommers.digester.query.LegacyId;
 import com.wiley.frommers.digester.query.LocationSearchQuery;
 import com.wiley.frommers.digester.query.MainSearchQuery;
 import com.wiley.frommers.digester.query.MediaSearchQuery;
@@ -40,6 +41,9 @@ public interface FrommersDigester {
     public abstract Location getLocationById(Long locationId)
             throws FrommersFeedException;
 
+    public abstract Location getLocationByLegacyId(LegacyId legacyId,
+            Long legacyIdValue) throws FrommersFeedException;
+
     public abstract GuideStructure getGuideStructureById(Long guideStructureId)
             throws FrommersFeedException;
 
@@ -49,6 +53,9 @@ public interface FrommersDigester {
 
     public abstract ItemOfInterest getItemOfInterestById(Long itemOfInterestId)
             throws FrommersFeedException;
+
+    public abstract ItemOfInterest getItemOfInterestByLegacyId(
+            LegacyId legacyId, Long legacyIdValue) throws FrommersFeedException;
 
     public abstract DestinationMenu getDestinationMenuByLocationId(
             Long locationId, boolean autoHide) throws FrommersFeedException;

@@ -40,8 +40,8 @@ public enum QueryParams {
     SHOW_CHILDREN("showChildren"),
     DEPTH("depth"),
     START_DATE("startDate"),
-    END_DATE("endDate");
-    
+    END_DATE("endDate"),
+    FROMMERS_DESTINATION_ID("frommersDestinationId");
     
     private String name;
     

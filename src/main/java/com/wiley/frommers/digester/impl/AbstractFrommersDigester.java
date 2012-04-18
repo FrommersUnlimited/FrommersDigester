@@ -26,6 +26,7 @@ import com.wiley.frommers.digester.domain.SlideshowSearchResult;
 import com.wiley.frommers.digester.query.AudienceInterestSearchQuery;
 import com.wiley.frommers.digester.query.CalendarEventSearchQuery;
 import com.wiley.frommers.digester.query.EventSearchQuery;
+import com.wiley.frommers.digester.query.LegacyId;
 import com.wiley.frommers.digester.query.LocationSearchQuery;
 import com.wiley.frommers.digester.query.MainSearchQuery;
 import com.wiley.frommers.digester.query.MediaSearchQuery;
@@ -46,9 +47,10 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
     public AbstractFrommersDigester(FrommersDigesterConfig config) {
         this.config = config;
         this.rootUrl = config.getRootUrl();
-        
-        if (config.isCacheActive()){
-            cache = new SimpleObjectCache(config.getCacheSize(), config.getCacheMaxAge());
+
+        if (config.isCacheActive()) {
+            cache = new SimpleObjectCache(config.getCacheSize(),
+                    config.getCacheMaxAge());
         }
     }
 
@@ -64,21 +66,22 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
     @SuppressWarnings("unchecked")
     private <T> T getById(String feedCode, String idName, Long idVal)
             throws FrommersFeedException {
-            
+
         if (config.isCacheActive()) {
             // generate a unique code by object type and feed
-            final String key = FeedUrlBuilder.generateKey(feedCode, idName, idVal);
+            final String key = FeedUrlBuilder.generateKey(feedCode, idName,
+                    idVal);
             Object result = cache.get(key);
             if (result == null) {
-                result = getFeedResponse(FeedUrlBuilder.createUrl(rootUrl, feedCode,
-                        idName, idVal));
-                cache.put(key, result);             
+                result = getFeedResponse(FeedUrlBuilder.createUrl(rootUrl,
+                        feedCode, idName, idVal));
+                cache.put(key, result);
             }
-            return (T) result;   
-            
+            return (T) result;
+
         } else {
-            return (T) getFeedResponse(FeedUrlBuilder.createUrl(rootUrl, feedCode,
-                idName, idVal));
+            return (T) getFeedResponse(FeedUrlBuilder.createUrl(rootUrl,
+                    feedCode, idName, idVal));
         }
     }
 
@@ -169,6 +172,20 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
      * (non-Javadoc)
      * 
      * @see
+     * com.wiley.frommers.digester.FrommersDigester#getLocationByLegacyId(com
+     * .wiley.frommers.digester.query.LegacyId, java.lang.Long)
+     */
+    @Override
+    public Location getLocationByLegacyId(LegacyId legacyId, Long legacyIdValue)
+            throws FrommersFeedException {
+        return (Location) getById(Feed.LOCATION.getCode(), legacyId.getName(),
+                legacyIdValue);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
      * com.wiley.frommers.digester.impl.FrommersDigister#getGuideStructureById
      * (java.lang.Long)
      */
@@ -211,6 +228,20 @@ public abstract class AbstractFrommersDigester implements FrommersDigester {
             throws FrommersFeedException {
         return (ItemOfInterest) getById(Feed.ITEM_OF_INTEREST.getCode(),
                 QueryParams.ITEM_OF_INTEREST_ID.getName(), itemOfInterestId);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.wiley.frommers.digester.FrommersDigester#getItemOfInterestByLegacyId
+     * (com.wiley.frommers.digester.query.LegacyId, java.lang.Long)
+     */
+    @Override
+    public ItemOfInterest getItemOfInterestByLegacyId(LegacyId legacyId,
+            Long legacyIdValue) throws FrommersFeedException {
+        return (ItemOfInterest) getById(Feed.ITEM_OF_INTEREST.getCode(),
+                legacyId.getName(), legacyIdValue);
     }
 
     // --------------------------------------------------------
