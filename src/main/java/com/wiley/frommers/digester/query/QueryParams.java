@@ -19,7 +19,7 @@ public enum QueryParams {
     LONGITUDE("longitude"),
     LATITUDE("latitude"),
     MILES("miles"),
-    SUB_TYPE("type"),
+    SUB_TYPE("subType"),
     SHOW_DEPTH("showDepth"),
     SHOW_MAX("showMax"),
     AUDIENCE_INTEREST_ID("audienceInterestId"),
